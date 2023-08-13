@@ -1,0 +1,192 @@
+  @import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Lilita+One&display=swap');
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    
+
+}
+.header{
+    font-family: 'Lilita One', cursive;
+}
+body{
+
+    background-image: url("bg.jpg");
+    background-size: cover;
+    
+}
+.maindiv{
+position: relative;
+}
+
+.navbar{
+    background-color:transparent;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo{
+    padding-left: 20px;
+    display: inline-block;
+    height: 90px;
+    width: 110px;
+    z-index: -1;
+    padding-top: 20px;
+    opacity: .6;
+    transition: .3s;
+    
+    
+}
+
+.logo:hover{
+    opacity: 1;
+}
+
+ul li {
+    list-style: none;
+    display: inline-block;
+    padding:10px 50px;
+    font-weight: bold;
+    color: white;
+    }
+
+.signin{
+    margin-right: 15px;
+    padding:5px 15px;
+    color: white;
+    background-color: lightseagreen;
+    border-radius:25px;
+    border:5px lightseagreen solid;
+    font-size: 18px;
+    font-weight: 350;
+    opacity: .7;
+    transition: .3s;
+    font-family: 'Lilita One', cursive;
+}
+.signin:hover{
+    background-color: white;
+    color: lightseagreen;
+    transform:translateX(-10px);
+    cursor: pointer;
+    opacity: .9;
+}
+
+ul li a {
+    font-weight: 400;
+    color: white;
+    transition: .3s;
+    font-size: 19px;
+
+}
+ul li a:hover{
+
+    color: turquoise;
+
+}
+.imagine{
+    position: absolute;
+    bottom: 800px;
+    right: 300px;
+    top: 160px;
+    left: 450px;
+    font-size: 60px;
+    transition: .3s;
+    
+    
+}
+.imagine:hover{
+    -webkit-text-stroke: 1px white;
+    color: transparent;
+}
+
+.check{
+    position: absolute;
+    top: 270px;
+    left: 690px;
+    padding: 15px 32px;
+    border-radius: 28px;
+    background-color: transparent;
+    border: #77b3f9 solid;
+    color: #d8eeed;
+    font-weight: normal;
+    font-size:15px;
+    cursor: pointer;
+    transition: .3s;
+    font-family: 'Lilita One', cursive;
+
+}
+.check:hover{
+    background-color: #d8eeed;
+    color:#77b3f9;
+    transform: translatey(15px);
+    
+    
+}
+
+
+.paragraph{
+    text-align: center;
+    transition: 0.3s;
+    opacity: .7;
+    position: absolute;
+    color: white;
+    font-size: 22px;
+    left: 50px;
+    top : 490px
+    
+    
+    
+}   
+.paragraph:hover{
+    opacity: 0.9;
+    transform: translateY(8px);
+}
+
+
+.designer{
+    font-weight: bold;
+    transition: 0.3s;
+    font-family: 'Dancing Script', cursive;
+    transition: 0.3s;
+    opacity: .7;
+    position: absolute;
+    color:rgba(76, 183, 200, 0.9);
+    font-size: 25px;
+    left: 580px;
+    top : 680px
+    
+    
+    
+}
+.designer:hover{
+    font-size: 28px;
+    font-weight: 700;
+    color: rgba(50, 164, 153, 0.92);
+    transform: translateY(5px);
+    transform: translateX(-5px);
+}
+a{
+    position: relative;
+}
+
+a:after{
+    content: "";
+    position: absolute;
+    background-color: rgba(76, 183, 200, 0.9);
+    height: 3px;
+    width: 0;
+    left: 0;
+    top: 24px;
+    transition: 0.3s;
+}
+
+
+a:hover:after{
+    width: 100%;;
+}
+
+
+
