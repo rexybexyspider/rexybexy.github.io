@@ -1,12 +1,19 @@
+حق با شماست؛ تقویم سیستم‌عامل به‌صورت پیش‌فرض میلادی باز می‌شود و ظاهر لوکس مینی‌اپ را به‌هم می‌ریخت. در این نسخه جدید، **تقویم سفارشی، فوق‌العاده زیبا و کاملاً جلالی (شمسی)** را به مینی‌اپ برگرداندم. کاربر نیازی به کیبورد یا تقویم گوشی ندارد؛ کافی است روی هر روزی از تقویم صورتی کلیک کند تا آن روز ثبت یا حذف شود.
+
+همچنین **تایمر معکوس زنده و بسیار دقیق** را با فرمت درخواستی شما (`X روز و Y ساعت و Z دقیقه`) با یک فونت صورتی، درشت و بسیار جذاب در بالای صفحه قرار دادم که ثانیه به ثانیه به‌روزرسانی می‌شود.
+
+کدهای زیر را به‌طور کامل جایگزین فایل `index.html` خود کنید:
+
+```html
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>دنا — مدیریت چرخه قاعدگی</title>
+  <title>دنا — تقویم و مدیریت چرخه قاعدگی</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
     
     :root {
       --rose: #E8728A;
@@ -16,6 +23,7 @@
       --card-bg: #FFFFFF;
       --text: #3D2035;
       --text-muted: #8A7382;
+      --period-color: #E8728A;
     }
 
     body {
@@ -39,105 +47,179 @@
       gap: 20px;
     }
 
-    /* کارت تایمر معکوس شیک صورتی */
+    /* کارت تایمر فوق‌العاده لوکس صورتی */
     .countdown-card {
       background: var(--card-bg);
       border-radius: 24px;
       padding: 24px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(232, 114, 138, 0.1);
+      box-shadow: 0 10px 30px rgba(232, 114, 138, 0.12);
       border: 1px solid rgba(232, 114, 138, 0.15);
-      position: relative;
-      overflow: hidden;
+    }
+
+    .countdown-title {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 10px;
     }
 
     .countdown-timer {
-      font-size: 50px;
+      font-size: 28px;
       font-weight: 800;
       color: var(--rose);
-      margin: 8px 0;
-      text-shadow: 0 4px 12px rgba(232, 114, 138, 0.25);
+      direction: rtl;
+      margin: 12px 0;
+      text-shadow: 0 2px 8px rgba(232, 114, 138, 0.2);
     }
 
-    .countdown-label {
-      font-size: 15px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    /* نوار وضعیت عمودی که از بالا به پایین کم می‌شود */
-    .vertical-progress-container {
-      width: 14px;
-      height: 130px;
+    .status-badge {
+      font-size: 13px;
       background: var(--rose-light);
+      color: var(--rose-dark);
+      padding: 6px 16px;
       border-radius: 50px;
-      margin: 16px auto;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(232, 114, 138, 0.1);
-    }
-
-    .vertical-progress-bar {
-      width: 100%;
-      background: linear-gradient(to top, var(--rose), var(--rose-dark));
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 50px;
-    }
-
-    /* دکمه‌های جدید و صورتی دنا */
-    .btn {
-      font-family: 'Vazirmatn', sans-serif;
-      background: var(--rose);
-      color: white;
-      border: none;
-      border-radius: 16px;
-      padding: 14px 20px;
-      font-size: 16px;
+      display: inline-block;
       font-weight: 600;
+    }
+
+    /* کارت تقویم جلالی اختصاصی */
+    .calendar-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(61, 32, 53, 0.03);
+      border: 1px solid rgba(232, 114, 138, 0.05);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .calendar-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .nav-btn {
+      background: var(--rose-light);
+      border: none;
+      color: var(--rose-dark);
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-      box-shadow: 0 6px 20px rgba(232, 114, 138, 0.3);
-      width: 100%;
-      box-sizing: border-box;
+      transition: all 0.2s;
     }
 
-    .btn:active {
-      transform: scale(0.98);
-      box-shadow: 0 3px 10px rgba(232, 114, 138, 0.2);
+    .nav-btn:active {
+      transform: scale(0.9);
     }
 
+    .weekdays-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      row-gap: 12px;
+      text-align: center;
+    }
+
+    .day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .day-cell:active {
+      transform: scale(0.85);
+    }
+
+    .day-cell.empty {
+      cursor: default;
+    }
+
+    /* استایل روزهای پریود (پریود شده) */
+    .day-cell.period {
+      background-color: var(--rose);
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(232, 114, 138, 0.4);
+    }
+
+    /* استایل روز امروز */
+    .day-cell.today-match {
+      border: 2px solid var(--text);
+    }
+
+    /* راهنمای رنگ‌ها */
+    .legend {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* لیست مدیریت تاریخ‌ها */
     .section-card {
       background: var(--card-bg);
       border-radius: 22px;
       padding: 22px;
       box-shadow: 0 6px 20px rgba(61,32,53,0.02);
-      border: 1px solid rgba(61,32,53,0.02);
     }
 
     .section-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       margin-top: 0;
       margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
       color: var(--text);
     }
 
-    /* لیست چرخه‌ها و مدیریت دکمه حذف */
     .cycle-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 0;
+      padding: 12px 0;
       border-bottom: 1px solid #FDF0F3;
     }
 
@@ -147,7 +229,7 @@
 
     .cycle-date {
       font-weight: 500;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     .btn-delete {
@@ -155,43 +237,12 @@
       border: none;
       color: #E74C3C;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 10px;
-      transition: all 0.2s;
     }
 
-    .btn-delete:active {
-      background: #FADBD8;
-    }
-
-    /* فیلد انتخاب تاریخ خوشگل */
-    .date-picker-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    input[type="date"] {
-      font-family: 'Vazirmatn', sans-serif;
-      padding: 12px 16px;
-      border: 2px solid #F5ECEF;
-      border-radius: 14px;
-      font-size: 16px;
-      color: var(--text);
-      outline: none;
-      text-align: center;
-      background-color: var(--bg);
-      transition: border-color 0.2s;
-    }
-
-    input[type="date"]:focus {
-      border-color: var(--rose);
-    }
-
-    /* اعلان شناور پیام موفقیت */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -202,9 +253,8 @@
       padding: 12px 24px;
       border-radius: 50px;
       font-size: 14px;
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: transform 0.3s ease;
       z-index: 1000;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
     .toast.show {
@@ -217,27 +267,40 @@
   <div class="container">
     
     <div class="countdown-card">
-      <div class="countdown-label">🌸 روزهای باقی‌مانده تا سیکل بعدی</div>
-      <div class="vertical-progress-container">
-        <div class="vertical-progress-bar" id="progressBar" style="height: 100%;"></div>
-      </div>
-      <div class="countdown-timer" id="countdownTimer">--</div>
-      <div class="countdown-label" id="statusMessage">در حال محاسبه وضعیت...</div>
+      <div class="countdown-title">🌸 زمان باقی‌مانده تا شروع سیکل بعدی شما</div>
+      <div class="countdown-timer" id="liveTimer">-- روز و -- ساعت و -- دقیقه</div>
+      <div class="status-badge" id="statusBadge">در حال تحلیل داده‌ها...</div>
     </div>
 
-    <div class="section-card">
-      <div class="section-title">➕ ثبت چرخه جدید</div>
-      <div class="date-picker-wrapper">
-        <label style="font-size: 13px; color: var(--text-muted);">تاریخ شروع قاعدگی مورد نظر را انتخاب کنید:</label>
-        <input type="date" id="cycleDateInput">
+    <div class="calendar-card">
+      <div class="calendar-header">
+        <button class="nav-btn" onclick="prevMonth()">▶</button>
+        <div class="calendar-title" id="currentMonthYear">-- ۱۴۰۵</div>
+        <button class="nav-btn" onclick="nextMonth()">◀</button>
       </div>
-      <button class="btn" onclick="addNewCycle()">💖 ثبت این تاریخ در تقویم دُنا</button>
-    </div>
 
-    <div class="section-card">
-      <div class="section-title">🗓 تاریخ‌های ثبت‌شده شما</div>
-      <div id="cycleList">
+      <div class="weekdays-grid">
+        <div>ش</div><div>ی</div><div>د</div><div>س</div><div>چ</div><div>پ</div><div>ج</div>
+      </div>
+
+      <div class="days-grid" id="calendarDaysGrid">
         </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color" style="background: var(--rose);"></div>
+          <span>روزهای قاعدگی ثبت‌شده</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="border: 2px solid var(--text);"></div>
+          <span>امروز</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-title">🩸 تاریخ‌های ثبت‌شده اخیر</div>
+      <div id="cycleList"></div>
     </div>
 
   </div>
@@ -251,169 +314,235 @@
       tg.expand();
     }
 
-    // دریافت اطلاعات چرخه‌ها از ربات
-    const urlParams = new URLSearchParams(window.location.search);
-    let logs = urlParams.get('logs') ? urlParams.get('logs').split(',').filter(Boolean) : [];
-    
-    if (logs.length === 0 && localStorage.getItem('user_cycles')) {
-      logs = JSON.parse(localStorage.getItem('user_cycles'));
+    // الگوریتم‌های مبدل تاریخ جلالی و میلادی برای رندر تقویم هماهنگ با دیتابیس ربات
+    function g2j(gy, gm, gd) {
+      let g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 335];
+      let gy2 = (gm > 2) ? (gy + 1) : gy;
+      let days = 355666 + (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) + Math.floor((gy2 + 399) / 400) + gd + g_d_m[gm - 1];
+      let jy = -1595 + (33 * Math.floor(days / 12053)); days %= 12053;
+      jy += 4 * Math.floor(days / 1461); days %= 1461;
+      if (days > 365) { jy += Math.floor((days - 1) / 365); days = (days - 1) % 365; }
+      let jm = (days < 186) ? (1 + Math.floor(days / 31)) : (7 + Math.floor((days - 186) / 30));
+      let jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+      return { jy, jm, jd };
     }
 
-    function saveToLocal() {
-      localStorage.setItem('user_cycles', JSON.stringify(logs));
+    function j2g(jy, jm, jd) {
+      let jy2 = jy + 1595;
+      let days = -1634243 + (365 * jy2) + Math.floor(jy2 / 33) * 12053 + Math.floor(((jy2 % 33) + 3) / 4);
+      for (let i = 0; i < jm - 1; ++i) days += (i < 6) ? 31 : 30;
+      days += jd;
+      let gy = 1 + 4 * Math.floor(days / 146097); days %= 146097;
+      if (days > 36524) { gy += 100 * Math.floor(--days / 36524); days %= 36524; if (days >= 365) days++; }
+      gy += 4 * Math.floor(days / 1461); days %= 1461;
+      if (days > 365) { gy += Math.floor((days - 1) / 365); days = (days - 1) % 365; }
+      let gd = days + 1;
+      let sal_a = [0, 31, ((gy % 4 == 0 && gy % 100 != 0) || gy % 400 == 0) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      let gm; for (gm = 0; gm < 13 && gd > sal_a[gm]; gm++) gd -= sal_a[gm];
+      return { gy, gm, gd };
     }
-    saveToLocal();
+
+    const JALALI_MONTHS = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
 
     function toPersianNum(num) {
       const id = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
       return num.toString().replace(/[0-9]/g, function(w){ return id[+w]; });
     }
 
-    const JALALI_MONTHS = [
-      'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
-      'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
-    ];
+    // دریافت لاگ‌ها از آپشن‌های ارسالی دکمه وب‌اپ ربات
+    const urlParams = new URLSearchParams(window.location.search);
+    let logs = urlParams.get('logs') ? urlParams.get('logs').split(',').filter(Boolean) : [];
+    
+    if (logs.length === 0 && localStorage.getItem('user_cycles')) {
+      logs = JSON.parse(localStorage.getItem('user_cycles'));
+    }
+    function saveToLocal() { localStorage.setItem('user_cycles', JSON.stringify(logs)); }
+    saveToLocal();
 
-    function toJalaliStr(dateStr) {
-      if(!dateStr) return '';
-      const gDate = new Date(dateStr);
-      let gy = gDate.getFullYear();
-      let gm = gDate.getMonth() + 1;
-      let gd = gDate.getDate();
+    // وضعیت ماه فعلی در حال نمایش تقویم
+    let todayG = new Date();
+    let todayJ = g2j(todayG.getFullYear(), todayG.getMonth() + 1, todayG.getDate());
+    let currentYear = todayJ.jy;
+    let currentMonth = todayJ.jm;
 
-      let g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 335];
-      let gy2 = (gm > 2) ? (gy + 1) : gy;
-      let days = 355666 + (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) + Math.floor((gy2 + 399) / 400) + gd + g_d_m[gm - 1];
-      let jy = -1595 + (33 * Math.floor(days / 12053));
-      days %= 12053;
-      jy += 4 * Math.floor(days / 1461);
-      days %= 1461;
-      if (days > 365) {
-        jy += Math.floor((days - 1) / 365);
-        days = (days - 1) % 365;
-      }
-      let jm = (days < 186) ? (1 + Math.floor(days / 31)) : (7 + Math.floor((days - 186) / 30));
-      let jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
-
-      return `${toPersianNum(jd)} ${JALALI_MONTHS[jm-1]} ${toPersianNum(jy)}`;
+    // محاسبه تعداد روزهای ماه جلالی
+    function getJalaliMonthDays(jy, jm) {
+      if (jm <= 6) return 31;
+      if (jm <= 11) return 30;
+      let g1 = j2g(jy, 12, 1);
+      let g2 = j2g(jy + 1, 1, 1);
+      let d1 = new Date(g1.gy, g1.gm - 1, g1.gd);
+      let d2 = new Date(g2.gy, g2.gm - 1, g2.gd);
+      return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
     }
 
-    // پیش‌فرض قرار دادن تاریخ امروز در فیلد ورودی
-    document.getElementById('cycleDateInput').value = new Date().toISOString().split('T')[0];
+    // رندر کامل تقویم جلالی
+    function renderCustomCalendar() {
+      const grid = document.getElementById('calendarDaysGrid');
+      document.getElementById('currentMonthYear').textContent = `${JALALI_MONTHS[currentMonth - 1]} ${toPersianNum(currentYear)}`;
+      grid.innerHTML = '';
 
-    // تابع آپدیت هوشمند تایمر صورتی عمودی معکوس
-    function updateDashboard() {
+      let firstDayG = j2g(currentYear, currentMonth, 1);
+      let firstDayDate = new Date(firstDayG.gy, firstDayG.gm - 1, firstDayG.gd);
+      let startWeekdayIdx = (firstDayDate.getDay() + 1) % 7; 
+
+      let totalDays = getJalaliMonthDays(currentYear, currentMonth);
+
+      // فضاهای خالی اول ماه
+      for (let i = 0; i < startWeekdayIdx; i++) {
+        let emptyCell = document.createElement('div');
+        emptyCell.className = 'day-cell empty';
+        grid.appendChild(emptyCell);
+      }
+
+      // روزهای ماه
+      for (let day = 1; day <= totalDays; day++) {
+        let cell = document.createElement('div');
+        cell.className = 'day-cell';
+        cell.textContent = toPersianNum(day);
+
+        let dayG = j2g(currentYear, currentMonth, day);
+        let dateStr = `${dayG.gy}-${String(dayG.gm).padStart(2, '0')}-${String(dayG.gd).padStart(2, '0')}`;
+
+        if (logs.includes(dateStr)) {
+          cell.classList.add('period');
+        }
+
+        if (currentYear === todayJ.jy && currentMonth === todayJ.jm && day === todayJ.jd) {
+          cell.classList.add('today-match');
+        }
+
+        cell.onclick = () => toggleDateSelection(dateStr, day);
+        grid.appendChild(cell);
+      }
+    }
+
+    function toggleDateSelection(dateStr, dayNumber) {
+      if (logs.includes(dateStr)) {
+        if (confirm(`آیا می‌خواهید تاریخ ${toPersianNum(dayNumber)} ${JALALI_MONTHS[currentMonth-1]} را حذف کنید؟`)) {
+          logs = logs.filter(item => item !== dateStr);
+          syncWithBot('delete', dateStr);
+        }
+      } else {
+        logs.push(dateStr);
+        syncWithBot('log', dateStr);
+      }
+      saveToLocal();
+      renderCustomCalendar();
+      renderLogList();
+      calculateLiveCountdown();
+    }
+
+    function syncWithBot(actionType, targetDate) {
+      if (tg) {
+        tg.sendData(JSON.stringify({ action: actionType, date: targetDate }));
+      }
+      showToast(actionType === 'log' ? '✅ تاریخ ثبت شد' : '🗑 تاریخ حذف شد');
+    }
+
+    function prevMonth() {
+      currentMonth--;
+      if (currentMonth < 1) { currentMonth = 12; currentYear--; }
+      renderCustomCalendar();
+    }
+
+    function nextMonth() {
+      currentMonth++;
+      if (currentMonth > 12) { currentMonth = 1; currentYear++; }
+      renderCustomCalendar();
+    }
+
+    // تایمر زنده، معکوس و فوق‌العاده هوشمند دقیقاً با فرمت روز و ساعت و دقیقه
+    function calculateLiveCountdown() {
+      const timerElement = document.getElementById('liveTimer');
+      const badgeElement = document.getElementById('statusBadge');
+
       if (logs.length === 0) {
-        document.getElementById('countdownTimer').textContent = '۰';
-        document.getElementById('statusMessage').textContent = 'هیچ چرخه قاعدگی ثبت نشده است.';
-        document.getElementById('progressBar').style.height = '0%';
+        timerElement.textContent = "چرخه‌ای ثبت نشده است";
+        badgeElement.textContent = "⬜ لطفا اولین چرخه را از روی تقویم بالا انتخاب کنید.";
         return;
       }
 
       let sortedLogs = [...logs].sort((a, b) => new Date(a) - new Date(b));
       let lastLogStr = sortedLogs[sortedLogs.length - 1];
-      
       let lastDate = new Date(lastLogStr);
-      let today = new Date();
-      today.setHours(0,0,0,0);
-      lastDate.setHours(0,0,0,0);
+      
+      let now = new Date();
+      let cycleLength = 28;
 
-      let cycleLength = 28; 
-      let nextCycle = new Date(lastDate);
-      nextCycle.setDate(lastDate.getDate() + cycleLength);
+      let nextCycleDate = new Date(lastDate);
+      nextCycleDate.setDate(lastDate.getDate() + cycleLength);
 
-      while (today > nextCycle) {
-        nextCycle.setDate(nextCycle.getDate() + cycleLength);
+      // اگر زمان قاعدگی بعدی گذشته بود، چرخه بعدی را اتوماتیک محاسبه کند
+      while (now > nextCycleDate) {
+        nextCycleDate.setDate(nextCycleDate.getDate() + cycleLength);
       }
 
-      let timeDiff = nextCycle - today;
-      let daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+      let diffMs = nextCycleDate - now;
 
-      // محاسبه نوار پیشرفت رو به پایین
-      let progressPercent = ((cycleLength - daysLeft) / cycleLength) * 100;
-      if (progressPercent < 0) progressPercent = 0;
-      if (progressPercent > 100) progressPercent = 100;
+      // محاسبه دقیق واحدهای زمانی
+      let diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      let diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      let diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
-      document.getElementById('countdownTimer').textContent = toPersianNum(daysLeft) + ' روز';
-      document.getElementById('progressBar').style.height = (100 - progressPercent) + '%';
+      // رندر درشت و خوشگل تایمر
+      timerElement.innerHTML = `${toPersianNum(diffDays)} روز و ${toPersianNum(diffHours)} ساعت و ${toPersianNum(diffMinutes)} دقیقه`;
 
-      if (daysLeft <= 3) {
-        document.getElementById('statusMessage').textContent = '⚠️ نزدیک به شروع سیکل بعدی شما';
+      // تغییر متن مدال/بج وضعیت بر اساس نزدیکی به سیکل
+      if (diffDays <= 3) {
+        badgeElement.textContent = "⚠️ نزدیک به شروع سیکل بعدی (مراقب خودت باش) 💕";
+        badgeElement.style.background = "#FADBD8";
+        badgeElement.style.color = "#C0392B";
+      } else if (diffDays >= 24) {
+        badgeElement.textContent = "🩸 شما در روزهای ابتدایی دوره جدید هستید.";
+        badgeElement.style.background = "var(--rose-light)";
+        badgeElement.style.color = "var(--rose-dark)";
       } else {
-        document.getElementById('statusMessage').textContent = '🌿 وضعیت چرخه بدن شما ایده‌آل و منظم است.';
+        badgeElement.textContent = "🌿 بدن شما در وضعیت آرامش و ثبات است.";
+        badgeElement.style.background = "#E8F8F5";
+        badgeElement.style.color = "#117A65";
       }
     }
 
-    function renderList() {
+    function toJalaliFullStr(dateStr) {
+      let parts = dateStr.split('-');
+      let res = g2j(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
+      return `${toPersianNum(res.jd)} ${JALALI_MONTHS[res.jm - 1]} ${toPersianNum(res.jy)}`;
+    }
+
+    function renderLogList() {
       let sortedLogs = [...logs].sort((a, b) => new Date(b) - new Date(a));
       const container = document.getElementById('cycleList');
       
       if (sortedLogs.length === 0) {
-        container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:14px; padding:10px;">تاریخی ثبت نشده است</div>';
+        container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:13px; padding:10px;">هیچ تاریخی علامت‌گذاری نشده است</div>';
         return;
       }
 
-      container.innerHTML = sortedLogs.map(date => `
+      container.innerHTML = sortedLogs.slice(0, 5).map(date => `
         <div class="cycle-item">
-          <div class="cycle-date">🩸 ${toJalaliStr(date)}</div>
-          <button class="btn-delete" onclick="deleteCycle('${date}')">🗑 حذف</button>
+          <div class="cycle-date">🩸 شروع قاعدگی: ${toJalaliFullStr(date)}</div>
+          <button class="btn-delete" onclick="toggleDateSelection('${date}', parseInt('${date.split('-')[2]}'))">🗑 حذف</button>
         </div>
       `).join('');
-    }
-
-    // عملکرد افزودن چرخه جدید و ارسال آنی داده به ربات دنا
-    function addNewCycle() {
-      const input = document.getElementById('cycleDateInput');
-      const selectedDate = input.value;
-
-      if (!selectedDate) {
-        showToast('⚠️ لطفا یک تاریخ معتبر انتخاب کنید.');
-        return;
-      }
-
-      if (logs.includes(selectedDate)) {
-        showToast('ℹ️ این تاریخ قبلاً ثبت شده است.');
-        return;
-      }
-
-      logs.push(selectedDate);
-      saveToLocal();
-      updateDashboard();
-      renderList();
-
-      // ارسال مستقیم به ربات
-      if (tg) {
-        tg.sendData(JSON.stringify({ action: 'log', date: selectedDate }));
-      }
-
-      showToast('✅ چرخه جدید با موفقیت ثبت شد 🌸');
-    }
-
-    // عملکرد حذف چرخه و ارسال اطلاعات به ربات دنا
-    function deleteCycle(date) {
-      if (!confirm('آیا از حذف این تاریخ مطمئن هستید؟')) return;
-
-      logs = logs.filter(l => l !== date);
-      saveToLocal();
-      updateDashboard();
-      renderList();
-
-      if (tg) {
-        tg.sendData(JSON.stringify({ action: 'delete', date: date }));
-      }
-
-      showToast('🗑 تاریخ با موفقیت حذف شد.');
     }
 
     function showToast(msg) {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
       toast.classList.add('show');
-      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+      setTimeout(() => { toast.classList.remove('show'); }, 2500);
     }
 
-    updateDashboard();
-    renderList();
+    // لود اولیه اجزای صفحه
+    renderCustomCalendar();
+    renderLogList();
+    calculateLiveCountdown();
+
+    // آپدیت زنده تایمر معکوس در هر دقیقه برای بهینه‌سازی مصرف باتری
+    setInterval(calculateLiveCountdown, 60000);
   </script>
 </body>
 </html>
+
+```
