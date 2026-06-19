@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دنا — چرخه من</title>
+<title>دنا — مینی اپ اختصاصی چرخه من</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jalaali-js/dist/jalaali.min.js"></script>
 <style>
@@ -23,119 +23,140 @@
     --safe:    #78C9A0;
     --fertile: #A8C9F0;
     --period:  #E8728A;
-    --pms:     #C9A8C4;
-    --shadow:  0 4px 24px rgba(61,32,53,0.10);
+    --shadow:  0 8px 32px rgba(61,32,53,0.08);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Vazirmatn', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+  body { font-family: 'Vazirmatn', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; padding-bottom: 40px; }
 
-  .header { background: linear-gradient(135deg, var(--rose-dk) 0%, var(--rose) 50%, var(--rose-lt) 100%); padding: 28px 20px 80px; position: relative; }
-  .header-top { display:flex; justify-content:space-between; align-items:center; }
-  .logo { font-size:22px; font-weight:700; color:#fff; }
-  .logo span { opacity:.7; font-weight:300; }
-  .header-greeting { margin-top:20px; }
-  .greeting-sub { font-size:13px; color:rgba(255,255,255,.8); }
-  .greeting-main { font-size:24px; font-weight:700; color:#fff; margin-top:4px; }
+  .header { background: linear-gradient(135deg, var(--rose-dk) 0%, var(--rose) 50%, var(--rose-lt) 100%); padding: 30px 20px 60px; text-align: center; color: white;}
+  .logo { font-size: 24px; font-weight: 700; }
+  .logo span { font-weight: 300; opacity: 0.8; }
 
-  .status-card { margin: -48px 16px 0; background: #fff; border-radius: 20px; padding: 20px; box-shadow: var(--shadow); position: relative; z-index: 10; }
-  .status-top { display:flex; justify-content:space-between; align-items:flex-start; }
-  .cycle-day-badge { background: linear-gradient(135deg, var(--rose), var(--rose-dk)); color:#fff; border-radius:12px; padding:6px 14px; font-size:13px; font-weight:600; }
-  .phase-label { font-size:11px; color:var(--ink-30); font-weight:500; }
-  .phase-name { font-size:17px; font-weight:700; color:var(--ink); }
-  .status-bar { margin-top:16px; }
-  .status-bar-track { height:8px; background:var(--lav-lt); border-radius:4px; overflow:hidden; }
-  .status-bar-fill { height:100%; background:linear-gradient(90deg, var(--rose), var(--lavender)); transition: width .8s; }
-  .status-meta { display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--ink-30); }
-  .next-info { display:flex; gap:12px; margin-top:16px; }
-  .next-box { flex:1; background:var(--blush); border-radius:12px; padding:12px; text-align:center; }
-  .next-box .nb-val { font-size:22px; font-weight:700; color:var(--rose-dk); }
-  .next-box .nb-lbl { font-size:11px; color:var(--ink-50); margin-top:2px; }
+  /* Navigation Tabs */
+  .nav-tabs { display: flex; margin: -25px 16px 20px; background: white; border-radius: 16px; padding: 6px; box-shadow: var(--shadow); position: relative; z-index: 100; }
+  .tab { flex: 1; padding: 12px; border: none; background: transparent; font-family: inherit; font-size: 13px; color: var(--ink-50); border-radius: 12px; cursor: pointer; text-align: center; transition: 0.2s; }
+  .tab.active { background: linear-gradient(135deg, var(--rose), var(--rose-dk)); color: white; font-weight: 600; }
 
-  .nav-tabs { display:flex; margin:20px 16px 0; background:#fff; border-radius:14px; padding:4px; box-shadow:0 2px 8px rgba(61,32,53,.06); }
-  .tab { flex:1; padding:10px; border:none; background:transparent; font-family:inherit; font-size:13px; color:var(--ink-50); border-radius:10px; cursor:pointer; }
-  .tab.active { background:linear-gradient(135deg,var(--rose),var(--rose-dk)); color:#fff; font-weight:600; }
+  .page { display: none; padding: 0 16px; animation: fadeIn 0.4s ease forwards; }
+  .page.active { display: block; }
 
-  .page { display:none; padding:16px; }
-  .page.active { display:block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  .calendar-card { background:#fff; border-radius:20px; padding:20px; box-shadow:var(--shadow); }
-  .cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
-  .cal-nav { background:none; border:none; color:var(--rose); font-size:20px; padding:4px 8px; }
-  .cal-month { font-size:17px; font-weight:700; color:var(--ink); }
-  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
-  .cal-dow { text-align:center; font-size:11px; font-weight:600; color:var(--ink-30); padding:6px 0; }
-  .cal-day { aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:13px; cursor:pointer; }
-  .cal-day.today { border:2px solid var(--rose); color:var(--rose); font-weight:700; }
-  .cal-day.period { background:var(--period); color:#fff; }
-  .cal-day.fertile { background:var(--fertile); color:var(--ink); }
-  .cal-day.pms { background:var(--pms); color:#fff; }
-  .cal-day.predicted { background:rgba(232,114,138,.15); border:1.5px dashed var(--rose); }
-  .cal-day.ovulation { background:var(--safe); color:#fff; }
+  /* Cards Design */
+  .card { background: white; border-radius: 20px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .card-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: var(--rose-dk); }
 
-  .log-btn { width:100%; margin-top:16px; padding:16px; background:linear-gradient(135deg,var(--rose),var(--rose-dk)); color:#fff; border:none; border-radius:14px; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; display:flex; justify-content:center; gap:8px; }
+  /* Dashboard Details Spec */
+  .status-big { text-align: center; padding: 10px 0; }
+  .status-day { font-size: 48px; font-weight: 800; color: var(--rose-dk); line-height: 1; }
+  .status-phase { font-size: 18px; font-weight: 700; margin-top: 8px; color: var(--ink); }
+  
+  .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .detail-box { background: var(--blush); padding: 14px; border-radius: 14px; border-right: 4px solid var(--rose); }
+  .detail-box.ovul { border-right-color: var(--safe); background: #F0FAF5; }
+  .detail-box.fert { border-right-color: var(--fertile); background: #F0F5FA; }
+  .detail-lbl { font-size: 11px; color: var(--ink-50); }
+  .detail-val { font-size: 14px; font-weight: 700; margin-top: 4px; }
+
+  /* Calendar */
+  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .cal-nav { background: none; border: none; color: var(--rose); font-size: 22px; padding: 4px 12px; cursor: pointer; font-weight: bold; }
+  .cal-month { font-size: 16px; font-weight: 700; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+  .cal-dow { font-size: 12px; font-weight: 600; color: var(--ink-30); padding-bottom: 8px; }
+  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; position: relative; }
+  .cal-day:active { transform: scale(0.9); }
+  .cal-day.today { border: 2px solid var(--ink); font-weight: 700; }
+  .cal-day.period { background: var(--period); color: white; box-shadow: 0 4px 10px rgba(232,114,138,0.3); }
+  .cal-day.fertile { background: var(--fertile); color: var(--ink); }
+  .cal-day.ovulation { background: var(--safe); color: white; }
+  .cal-day.empty { pointer-events: none; opacity: 0; }
+
+  /* Management & Delete List */
+  .manage-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--blush); border-radius: 14px; margin-bottom: 10px; }
+  .manage-date { font-weight: 600; font-size: 14px; }
+  .btn-delete { background: #FFEBEE; color: #D32F2F; border: none; padding: 8px 14px; border-radius: 10px; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+  .btn-delete:hover { background: #FFCDD2; }
 
   /* Modal */
-  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4); display:flex; align-items:flex-end; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition:opacity .25s; }
-  .modal-overlay.open { opacity:1; pointer-events:all; }
-  .modal { background:#fff; border-radius:24px 24px 0 0; padding:24px; width:100%; transform:translateY(100%); transition:transform .3s; }
-  .modal-overlay.open .modal { transform:translateY(0); }
-  .modal-actions { display:flex; gap:10px; margin-top:15px; }
-  .btn-cancel { flex:1; padding:14px; border-radius:12px; background:var(--lav-lt); border:none; font-family:inherit; font-size:14px; }
-  .btn-confirm { flex:2; padding:14px; border-radius:12px; background:linear-gradient(135deg,var(--rose),var(--rose-dk)); color:#fff; border:none; font-family:inherit; font-size:14px; font-weight:700; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(61,32,53,0.4); display: flex; align-items: flex-end; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.25s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: white; border-radius: 24px 24px 0 0; padding: 24px; width: 100%; transform: translateY(100%); transition: transform 0.3s; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+  .btn-submit { background: linear-gradient(135deg, var(--rose), var(--rose-dk)); color: white; }
+  .btn-close { background: var(--lav-lt); color: var(--ink-50); }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-top">
-    <div class="logo">دُنا <span>| چرخه من</span></div>
-  </div>
-  <div class="header-greeting">
-    <div class="greeting-sub" id="greetingSub">دستیار چرخه قاعدگی شما</div>
-    <div class="greeting-main" id="greetingMain">در حال بارگذاری...</div>
-  </div>
-</div>
-
-<div class="status-card">
-  <div class="status-top">
-    <div>
-      <div class="phase-label">مرحله فعلی</div>
-      <div class="phase-name" id="phaseName">—</div>
-    </div>
-    <div class="cycle-day-badge" id="cycleDayBadge">روز —</div>
-  </div>
-  <div class="status-bar">
-    <div class="status-bar-track"><div class="status-bar-fill" id="statusBarFill" style="width:0%"></div></div>
-  </div>
-  <div class="next-info" style="margin-top:20px; font-size:13px; text-align:center; color:var(--ink-50)">
-    برای ثبت دقیق‌تر، از دکمه‌های تقویم استفاده کنید.
-  </div>
+  <div class="logo">دُنا <span>| کنترل هوشمند چرخه</span></div>
 </div>
 
 <div class="nav-tabs">
-  <button class="tab active" onclick="showPage('calendar')">📅 تقویم شمسی</button>
+  <button class="tab active" id="t-dash" onclick="showPage('dashboard')">📊 جزئیات و داشبورد</button>
+  <button class="tab" id="t-cal" onclick="showPage('calendar')">📅 تقویم پریودی</button>
+  <button class="tab" id="t-manage" onclick="showPage('manage')">🛠️ مدیریت و حذف</button>
 </div>
 
-<div class="page active" id="page-calendar">
-  <div class="calendar-card">
+<div class="page active" id="page-dashboard">
+  <div class="card" style="text-align: center;">
+    <div class="status-big">
+      <div class="status-day" id="dashDay">۰</div>
+      <div class="status-phase" id="dashPhase">در حال محاسبه چرخه...</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔮 جزئیات پیش‌بینی و سلامت</div>
+    <div class="details-grid">
+      <div class="detail-box">
+        <div class="detail-lbl">🩸 دوره بعدی قاعدگی</div>
+        <div class="detail-val" id="dashNextPeriod">—</div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-lbl">⏳ وضعیت روزشمار</div>
+        <div class="detail-val" id="dashCountdown">—</div>
+      </div>
+      <div class="detail-box ovul">
+        <div class="detail-lbl">💫 روز تخمک‌گذاری</div>
+        <div class="detail-val" id="dashOvulation">—</div>
+      </div>
+      <div class="detail-box fert">
+        <div class="detail-lbl">🌿 پنجره باروری هوشمند</div>
+        <div class="detail-val" id="dashFertile">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-calendar">
+  <div class="card">
     <div class="cal-header">
       <button class="cal-nav" onclick="changeMonth(1)">‹</button>
-      <div class="cal-month" id="calMonthLabel">—</div>
+      <div class="cal-month" id="calMonthLabel">ماه سال</div>
       <button class="cal-nav" onclick="changeMonth(-1)">›</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
   </div>
 </div>
 
+<div class="page" id="page-manage">
+  <div class="card">
+    <div class="card-title">🗑️ حذف یا اضافه کردن دوره‌ها</div>
+    <p style="font-size: 12px; color: var(--ink-50); margin-bottom: 16px;">در این بخش می‌توانید تاریخ‌های قبلی ثبت شده را مشاهده و در صورت اشتباه بودن حذف کنید:</p>
+    <div id="manageList"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="logModal">
   <div class="modal">
-    <div style="font-weight:bold; font-size:18px; margin-bottom:10px;">🌸 ثبت قاعدگی در ربات</div>
-    <div id="modalDate" style="color:gray; font-size:14px;">تاریخ —</div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="document.getElementById('logModal').classList.remove('open')">لغو</button>
-      <button class="btn-confirm" onclick="confirmLog()">✅ ثبت کن و ببند</button>
-    </div>
+    <h3 style="margin-bottom: 8px;">🩸 ثبت شروع قاعدگی</h3>
+    <p id="modalDateLabel" style="color: var(--ink-50); margin-bottom: 16px; font-size: 14px;"></p>
+    <button class="modal-btn btn-submit" onclick="submitToBot('log')">✅ ثبت شروع قاعدگی در ربات</button>
+    <button class="modal-btn btn-close" onclick="closeModal()">لغو</button>
   </div>
 </div>
 
@@ -143,87 +164,117 @@
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
 
-// همگام‌سازی دیتابیس از طریق URL
+// گرفتن دیتای زنده از URL ربات
 const urlParams = new URLSearchParams(window.location.search);
 let logs = [];
 if (urlParams.has('logs') && urlParams.get('logs') !== "") {
-    logs = urlParams.get('logs').split(',');
+    logs = urlParams.get('logs').split(',').sort().reverse(); // مرتب‌سازی از جدید به قدیم
 }
 
-const CYCLE = 28, PERIOD_DAYS = 5, FERTILE_START = 10, FERTILE_END = 17, OVULATION = 14, PMS_START = 21;
-
-// تقویم شمسی با Jalaali-js
+const CYCLE = 28;
 const JALALI_MONTHS = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
 const DOW = ['ش','ی','د','س','چ','پ','ج'];
 
 const todayG = new Date();
+todayG.setHours(0,0,0,0);
 const todayJ = jalaali.toJalaali(todayG);
 let currentJy = todayJ.jy;
 let currentJm = todayJ.jm;
 
-function persianNum(n) { return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
-function dateStr(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+let selectedDateStr = null;
 
-function getLastLog() {
-  return logs.length ? new Date(logs[0]) : null; // ربات لاگ‌ها را برعکس (جدید به قدیم) می‌فرستد
+function persianNum(n) { return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+function formatDateStr(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+function toPersianLongDate(gDate) {
+    const j = jalaali.toJalaali(gDate);
+    return `${persianNum(j.jd)} ${JALALI_MONTHS[j.jm-1]} ${persianNum(j.jy)}`;
 }
 
-function getDayClass(dateS, lastLog) {
-  if (!lastLog) return '';
-  const d = new Date(dateS);
-  const last = new Date(lastLog);
-  const diff = Math.floor((d - last) / 86400000);
-  const cyclePos = ((diff % CYCLE) + CYCLE) % CYCLE + 1;
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`page-${pageId}`).classList.add('active');
+    
+    if(pageId === 'dashboard') document.getElementById('t-dash').classList.add('active');
+    if(pageId === 'calendar') document.getElementById('t-cal').classList.add('active');
+    if(pageId === 'manage') document.getElementById('t-manage').classList.add('active');
+}
 
-  if (logs.includes(dateS)) return 'period';
-  
-  const today = new Date(); today.setHours(0,0,0,0);
-  if (d > today) {
-    if (cyclePos >= 1 && cyclePos <= PERIOD_DAYS) return 'predicted';
-    if (cyclePos >= FERTILE_START && cyclePos <= FERTILE_END) return 'fertile';
-    if (cyclePos === OVULATION) return 'ovulation';
-    if (cyclePos >= PMS_START) return 'pms';
-    return '';
-  }
-  if (diff >= 0 && diff < PERIOD_DAYS) return 'period';
-  return '';
+function calculateDashboard() {
+    if (logs.length === 0) {
+        document.getElementById('dashDay').textContent = '⬜';
+        document.getElementById('dashPhase').textContent = 'هیچ دوره‌ای ثبت نشده است';
+        return;
+    }
+    
+    const lastLogDate = new Date(logs[0]);
+    const diffTime = Math.abs(todayG - lastLogDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    
+    document.getElementById('dashDay').textContent = `روز ${persianNum(diffDays)}`;
+    
+    // فازها
+    let phase = "وضعیت عادی";
+    if (diffDays <= 5) phase = "دوره قاعدگی 🩸";
+    else if (diffDays <= 9) phase = "پس از قاعدگی ✨";
+    else if (diffDays <= 17) phase = "پنجره باروری هوشمند 💫";
+    else if (diffDays <= 20) phase = "پس از تخمک‌گذاری 🌿";
+    else if (diffDays <= 28) phase = "پیش از قاعدگی (PMS) 🌙";
+    else phase = "تأخیر در قاعدگی ⚠️";
+    document.getElementById('dashPhase').textContent = phase;
+
+    // محاسبات بعدی
+    const nextPeriodG = new Date(lastLogDate);
+    nextPeriodG.setDate(nextPeriodG.getDate() + CYCLE);
+    document.getElementById('dashNextPeriod').textContent = toPersianLongDate(nextPeriodG);
+
+    const countdown = Math.ceil((nextPeriodG - todayG) / (1000 * 60 * 60 * 24));
+    document.getElementById('dashCountdown').textContent = countdown > 0 ? `${persianNum(countdown)} روز مانده` : 'امروز قاعدگی بعدی';
+
+    const ovulationG = new Date(lastLogDate);
+    ovulationG.setDate(ovulationG.getDate() + 14);
+    document.getElementById('dashOvulation').textContent = toPersianLongDate(ovulationG);
+
+    const fertileStart = new Date(lastLogDate); fertileStart.setDate(fertileStart.getDate() + 10);
+    const fertileEnd = new Date(lastLogDate); fertileEnd.setDate(fertileEnd.getDate() + 17);
+    document.getElementById('dashFertile').textContent = `${persianNum(jalaali.toJalaali(fertileStart).jd)} تا ${toPersianLongDate(fertileEnd)}`;
 }
 
 function renderCalendar() {
   document.getElementById('calMonthLabel').textContent = `${JALALI_MONTHS[currentJm-1]} ${persianNum(currentJy)}`;
-  
   const grid = document.getElementById('calGrid');
-  grid.innerHTML = DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  grid.innerHTML = DOW.map(d => `<div class="cal-dow">${d}</div>`).join('');
 
-  // پیدا کردن روز اول ماه جلالی
-  const firstDayG = jalaali.toGregorian(currentJy, currentJm, 1);
-  const firstDayDate = new Date(firstDayG.gy, firstDayG.gm-1, firstDayG.gd);
-  const startDow = (firstDayDate.getDay() + 1) % 7;
+  const firstG = jalaali.toGregorian(currentJy, currentJm, 1);
+  const firstDate = new Date(firstG.gy, firstG.gm-1, firstG.gd);
+  const startDow = (firstDate.getDay() + 1) % 7;
   const monthLength = jalaali.jalaaliMonthLength(currentJy, currentJm);
 
   for (let i=0; i<startDow; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
 
-  const lastLog = getLastLog() ? dateStr(getLastLog()) : null;
-
   for (let d=1; d<=monthLength; d++) {
     const g = jalaali.toGregorian(currentJy, currentJm, d);
     const gDate = new Date(g.gy, g.gm-1, g.gd);
-    const ds = dateStr(gDate);
-    const isToday = (currentJy === todayJ.jy && currentJm === todayJ.jm && d === todayJ.jd);
-    const cls = getDayClass(ds, lastLog);
+    const dateStr = formatDateStr(gDate);
+    
+    let cls = '';
+    if (currentJy === todayJ.jy && currentJm === todayJ.jm && d === todayJ.jd) cls += ' today';
+    
+    // رنگ‌آمیزی بر اساس دیتای واقعی
+    if (logs.includes(dateStr)) {
+        cls += ' period';
+    } else if (logs.length > 0) {
+        const lastLog = new Date(logs[0]);
+        const diff = Math.floor((gDate - lastLog) / (1000*60*60*24));
+        const cyclePos = ((diff % CYCLE) + CYCLE) % CYCLE + 1;
+        if (diff >= 0) {
+            if (cyclePos === 14) cls += ' ovulation';
+            else if (cyclePos >= 10 && cyclePos <= 17) cls += ' fertile';
+        }
+    }
 
-    grid.innerHTML += `<div class="cal-day ${cls} ${isToday?'today':''}" onclick="openLogModal('${ds}', ${currentJy}, ${currentJm}, ${d})">${persianNum(d)}</div>`;
-  }
-
-  // آپدیت کارد بالایی
-  if (lastLog) {
-      const diff = Math.floor((todayG - new Date(lastLog)) / 86400000) + 1;
-      document.getElementById('cycleDayBadge').textContent = `روز ${persianNum(diff)}`;
-      document.getElementById('statusBarFill').style.width = `${Math.min(diff/CYCLE*100,100)}%`;
-      document.getElementById('phaseName').textContent = diff <= 5 ? 'قاعدگی 🩸' : 'در چرخه ✨';
-      document.getElementById('greetingMain').textContent = `اطلاعات با ربات همگام شد 💕`;
-  } else {
-      document.getElementById('greetingMain').textContent = `هنوز ثبتی در ربات ندارید 💕`;
+    grid.innerHTML += `<div class="cal-day ${cls}" onclick="openLogModal('${dateStr}', ${d})">${persianNum(d)}</div>`;
   }
 }
 
@@ -234,22 +285,50 @@ function changeMonth(dir) {
   renderCalendar();
 }
 
-let pendingDate = null;
-function openLogModal(ds, jy, jm, jd) {
-  if (new Date(ds) > new Date()) return; // آینده را نمی‌توان ثبت کرد
-  pendingDate = ds;
-  document.getElementById('modalDate').textContent = `تاریخ شمسی: ${persianNum(jd)} ${JALALI_MONTHS[jm-1]} ${persianNum(jy)}`;
-  document.getElementById('logModal').classList.add('open');
+function openLogModal(dateStr, dayNum) {
+    if (new Date(dateStr) > todayG) return; // ثبت آینده ممکن نیست
+    selectedDateStr = dateStr;
+    document.getElementById('modalDateLabel').textContent = `آیا مایلید تاریخ ${persianNum(dayNum)} ${JALALI_MONTHS[currentJm-1]} را ثبت کنید؟`;
+    document.getElementById('logModal').classList.add('open');
 }
 
-function confirmLog() {
-  if (!pendingDate || !tg) return;
-  // ارسال داده به ربات و بستن پنجره
-  tg.sendData(JSON.stringify({ action: 'log', date: pendingDate }));
-  tg.close();
+function closeModal() { document.getElementById('logModal').classList.remove('open'); }
+
+function renderManageList() {
+    const container = document.getElementById('manageList');
+    if (logs.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:gray; padding:20px;">هیچ تاریخی یافت نشد.</p>`;
+        return;
+    }
+    container.innerHTML = logs.map(date => {
+        const gDate = new Date(date);
+        return `
+            <div class="manage-item">
+                <div class="manage-date">🩸 شروع قاعدگی: ${toPersianLongDate(gDate)}</div>
+                <button class="btn-delete" onclick="requestDelete('${date}')">🗑️ حذف</button>
+            </div>
+        `;
+    }).join('');
 }
 
+function requestDelete(dateStr) {
+    selectedDateStr = dateStr;
+    if(confirm(`آیا از حذف تاریخ ${dateStr} مطمئن هستید؟ چرخه شما در ربات نیز اصلاح خواهد شد.`)) {
+        submitToBot('delete');
+    }
+}
+
+function submitToBot(actionType) {
+    if (!selectedDateStr || !tg) return;
+    // ارسال بسته‌ی امن داده به دیتابیس ربات تلگرام
+    tg.sendData(JSON.stringify({ action: actionType, date: selectedDateStr }));
+    tg.close();
+}
+
+// لود اولیه سیستم
+calculateDashboard();
 renderCalendar();
+renderManageList();
 </script>
 </body>
 </html>
