@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دنا — چرخه من</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --rose:    #E8728A;
+    --rose-lt: #F4A7B9;
+    --rose-dk: #C4506A;
+    --blush:   #FDF0F3;
+    --lavender:#C9A8C4;
+    --lav-lt:  #EDE0EC;
+    --cream:   #FFF8F9;
+    --ink:     #3D2035;
+    --ink-50:  #7A5070;
+    --ink-30:  #B898AE;
+    --safe:    #78C9A0;
+    --fertile: #A8C9F0;
+    --period:  #E8728A;
+    --pms:     #C9A8C4;
+    --card-r:  16px;
+    --shadow:  0 4px 24px rgba(61,32,53,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Vazirmatn', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, var(--rose-dk) 0%, var(--rose) 50%, var(--rose-lt) 100%);
+    padding: 28px 20px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse at 80% 20%, rgba(255,255,255,.18) 0%, transparent 60%);
+  }
+  .header-top { display:flex; justify-content:space-between; align-items:center; position:relative; }
+  .logo { font-size:22px; font-weight:700; color:#fff; letter-spacing:-0.5px; }
+  .logo span { opacity:.7; font-weight:300; }
+  .settings-btn {
+    width:36px; height:36px; border-radius:50%;
+    background:rgba(255,255,255,.2); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px;
+  }
+  .header-greeting { margin-top:20px; position:relative; }
+  .greeting-sub { font-size:13px; color:rgba(255,255,255,.8); font-weight:300; }
+  .greeting-main { font-size:24px; font-weight:700; color:#fff; margin-top:4px; }
+
+  /* ── Status Card ── */
+  .status-card {
+    margin: -48px 16px 0;
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    position: relative;
+    z-index: 10;
+  }
+  .status-top { display:flex; justify-content:space-between; align-items:flex-start; }
+  .cycle-day-badge {
+    background: linear-gradient(135deg, var(--rose), var(--rose-dk));
+    color:#fff; border-radius:12px; padding:6px 14px;
+    font-size:13px; font-weight:600;
+  }
+  .phase-label {
+    font-size:11px; color:var(--ink-30); font-weight:500;
+    text-transform:uppercase; letter-spacing:.5px; margin-bottom:2px;
+  }
+  .phase-name { font-size:17px; font-weight:700; color:var(--ink); }
+  .status-bar { margin-top:16px; }
+  .status-bar-track {
+    height:8px; background:var(--lav-lt); border-radius:4px; overflow:hidden;
+  }
+  .status-bar-fill {
+    height:100%; border-radius:4px;
+    background:linear-gradient(90deg, var(--rose), var(--lavender));
+    transition: width .8s cubic-bezier(.4,0,.2,1);
+  }
+  .status-meta { display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--ink-30); }
+
+  .next-info { display:flex; gap:12px; margin-top:16px; }
+  .next-box {
+    flex:1; background:var(--blush); border-radius:12px; padding:12px;
+    text-align:center;
+  }
+  .next-box .nb-val { font-size:22px; font-weight:700; color:var(--rose-dk); }
+  .next-box .nb-lbl { font-size:11px; color:var(--ink-50); margin-top:2px; font-weight:500; }
+
+  /* ── Nav Tabs ── */
+  .nav-tabs {
+    display:flex; margin:20px 16px 0;
+    background:#fff; border-radius:14px; padding:4px;
+    box-shadow:0 2px 8px rgba(61,32,53,.06);
+  }
+  .tab {
+    flex:1; padding:10px; border:none; background:transparent;
+    font-family:inherit; font-size:13px; font-weight:500;
+    color:var(--ink-50); border-radius:10px; cursor:pointer;
+    transition:all .2s;
+  }
+  .tab.active {
+    background:linear-gradient(135deg,var(--rose),var(--rose-dk));
+    color:#fff; font-weight:600;
+    box-shadow:0 3px 10px rgba(196,80,106,.3);
+  }
+
+  /* ── Pages ── */
+  .page { display:none; padding:16px; }
+  .page.active { display:block; }
+
+  /* ── Calendar ── */
+  .calendar-card {
+    background:#fff; border-radius:20px; padding:20px;
+    box-shadow:var(--shadow);
+  }
+  .cal-header {
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;
+  }
+  .cal-nav { background:none; border:none; color:var(--rose); font-size:20px; cursor:pointer; padding:4px 8px; }
+  .cal-month { font-size:17px; font-weight:700; color:var(--ink); }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .cal-dow {
+    text-align:center; font-size:11px; font-weight:600;
+    color:var(--ink-30); padding:6px 0;
+  }
+  .cal-day {
+    aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+    border-radius:50%; font-size:13px; font-weight:500; cursor:pointer;
+    transition:all .15s; color:var(--ink); position:relative;
+  }
+  .cal-day:hover:not(.empty) { background:var(--lav-lt); }
+  .cal-day.empty { cursor:default; }
+  .cal-day.today { border:2px solid var(--rose); color:var(--rose); font-weight:700; }
+  .cal-day.period { background:var(--period); color:#fff; }
+  .cal-day.fertile { background:var(--fertile); color:var(--ink); }
+  .cal-day.pms { background:var(--pms); color:#fff; }
+  .cal-day.predicted { background:rgba(232,114,138,.15); border:1.5px dashed var(--rose); }
+  .cal-day.ovulation { background:var(--safe); color:#fff; }
+
+  .cal-legend { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+  .legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--ink-50); }
+  .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+  /* ── Log Button ── */
+  .log-btn {
+    width:100%; margin-top:16px; padding:16px;
+    background:linear-gradient(135deg,var(--rose),var(--rose-dk));
+    color:#fff; border:none; border-radius:14px;
+    font-family:inherit; font-size:15px; font-weight:700;
+    cursor:pointer; box-shadow:0 4px 16px rgba(196,80,106,.35);
+    transition:transform .15s, box-shadow .15s;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .log-btn:active { transform:scale(.97); box-shadow:0 2px 8px rgba(196,80,106,.25); }
+
+  /* ── Insights Page ── */
+  .insight-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .insight-card {
+    background:#fff; border-radius:16px; padding:16px;
+    box-shadow:0 2px 12px rgba(61,32,53,.07);
+  }
+  .insight-card.full { grid-column:1/-1; }
+  .ic-icon { font-size:24px; margin-bottom:8px; }
+  .ic-val { font-size:26px; font-weight:700; color:var(--rose-dk); }
+  .ic-lbl { font-size:12px; color:var(--ink-50); margin-top:2px; }
+
+  .tip-card {
+    background:linear-gradient(135deg,var(--lav-lt),var(--blush));
+    border-radius:16px; padding:18px; margin-top:12px;
+    border-right:4px solid var(--lavender);
+  }
+  .tip-title { font-size:14px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+  .tip-text { font-size:13px; color:var(--ink-50); line-height:1.7; }
+
+  /* ── History Page ── */
+  .history-list { display:flex; flex-direction:column; gap:10px; }
+  .history-item {
+    background:#fff; border-radius:14px; padding:16px;
+    box-shadow:0 2px 8px rgba(61,32,53,.06);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .hi-date { font-size:15px; font-weight:600; color:var(--ink); }
+  .hi-sub { font-size:12px; color:var(--ink-30); margin-top:2px; }
+  .hi-badge {
+    background:var(--blush); color:var(--rose-dk);
+    border-radius:8px; padding:4px 10px; font-size:12px; font-weight:600;
+  }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.4);
+    display:flex; align-items:flex-end; justify-content:center;
+    z-index:100; opacity:0; pointer-events:none; transition:opacity .25s;
+  }
+  .modal-overlay.open { opacity:1; pointer-events:all; }
+  .modal {
+    background:#fff; border-radius:24px 24px 0 0; padding:24px;
+    width:100%; max-width:480px;
+    transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  .modal-overlay.open .modal { transform:translateY(0); }
+  .modal-handle { width:40px; height:4px; background:var(--lav-lt); border-radius:2px; margin:0 auto 20px; }
+  .modal-title { font-size:18px; font-weight:700; color:var(--ink); text-align:center; margin-bottom:6px; }
+  .modal-sub { font-size:13px; color:var(--ink-50); text-align:center; margin-bottom:20px; }
+  .modal-actions { display:flex; gap:10px; }
+  .btn-cancel {
+    flex:1; padding:14px; border-radius:12px;
+    background:var(--lav-lt); color:var(--ink-50);
+    border:none; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  .btn-confirm {
+    flex:2; padding:14px; border-radius:12px;
+    background:linear-gradient(135deg,var(--rose),var(--rose-dk));
+    color:#fff; border:none; font-family:inherit; font-size:14px; font-weight:700;
+    cursor:pointer; box-shadow:0 3px 12px rgba(196,80,106,.3);
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
+    background:var(--ink); color:#fff; border-radius:12px; padding:12px 20px;
+    font-size:14px; font-weight:500; z-index:200;
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+    white-space:nowrap; box-shadow:0 4px 20px rgba(0,0,0,.25);
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width:0; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo">دُنا <span>| چرخه من</span></div>
+    <button class="settings-btn" onclick="showAbout()">⚙️</button>
+  </div>
+  <div class="header-greeting">
+    <div class="greeting-sub">امروز چه روزی از چرخه‌ته؟</div>
+    <div class="greeting-main" id="greetingMain">در حال بارگذاری...</div>
+  </div>
+</div>
+
+<!-- Status Card -->
+<div class="status-card">
+  <div class="status-top">
+    <div>
+      <div class="phase-label">مرحله فعلی</div>
+      <div class="phase-name" id="phaseName">—</div>
+    </div>
+    <div class="cycle-day-badge" id="cycleDayBadge">روز —</div>
+  </div>
+  <div class="status-bar">
+    <div class="status-bar-track"><div class="status-bar-fill" id="statusBarFill" style="width:0%"></div></div>
+    <div class="status-meta">
+      <span>شروع قاعدگی</span>
+      <span id="cycleProgress">— / ۲۸ روز</span>
+    </div>
+  </div>
+  <div class="next-info">
+    <div class="next-box">
+      <div class="nb-val" id="daysUntilPeriod">—</div>
+      <div class="nb-lbl">روز تا قاعدگی</div>
+    </div>
+    <div class="next-box">
+      <div class="nb-val" id="daysUntilOvulation">—</div>
+      <div class="nb-lbl">روز تا تخمک‌گذاری</div>
+    </div>
+    <div class="next-box">
+      <div class="nb-val" id="cycleCount">—</div>
+      <div class="nb-lbl">چرخه ثبت‌شده</div>
+    </div>
+  </div>
+</div>
+
+<!-- Nav Tabs -->
+<div class="nav-tabs">
+  <button class="tab active" onclick="showPage('calendar')">📅 تقویم</button>
+  <button class="tab" onclick="showPage('insights')">✨ آنالیز</button>
+  <button class="tab" onclick="showPage('history')">📋 تاریخچه</button>
+</div>
+
+<!-- Calendar Page -->
+<div class="page active" id="page-calendar">
+  <div class="calendar-card">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(1)">‹</button>
+      <div class="cal-month" id="calMonthLabel">—</div>
+      <button class="cal-nav" onclick="changeMonth(-1)">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--period)"></div>قاعدگی</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--fertile)"></div>باروری</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--safe)"></div>تخمک‌گذاری</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--pms)"></div>پیش از قاعدگی</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(232,114,138,.3);border:1.5px dashed var(--rose)"></div>پیش‌بینی</div>
+    </div>
+  </div>
+  <button class="log-btn" onclick="openLogModal()">
+    🌸 ثبت شروع قاعدگی امروز
+  </button>
+</div>
+
+<!-- Insights Page -->
+<div class="page" id="page-insights">
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="ic-icon">🩸</div>
+      <div class="ic-val" id="avgCycle">۲۸</div>
+      <div class="ic-lbl">میانگین چرخه (روز)</div>
+    </div>
+    <div class="insight-card">
+      <div class="ic-icon">📊</div>
+      <div class="ic-val" id="totalLogs">۰</div>
+      <div class="ic-lbl">کل ثبت‌ها</div>
+    </div>
+    <div class="insight-card full">
+      <div class="ic-icon">🔮</div>
+      <div class="ic-val" id="nextPeriodDate" style="font-size:18px">—</div>
+      <div class="ic-lbl">تاریخ پیش‌بینی قاعدگی بعدی</div>
+    </div>
+    <div class="insight-card full">
+      <div class="ic-icon">💫</div>
+      <div class="ic-val" id="ovulationDate" style="font-size:18px">—</div>
+      <div class="ic-lbl">تاریخ پیش‌بینی تخمک‌گذاری</div>
+    </div>
+  </div>
+  <div class="tip-card" id="phaseTip">
+    <div class="tip-title">💌 نکته روز</div>
+    <div class="tip-text" id="phaseTipText">در حال بارگذاری...</div>
+  </div>
+</div>
+
+<!-- History Page -->
+<div class="page" id="page-history">
+  <div class="history-list" id="historyList">
+    <div style="text-align:center;padding:40px;color:var(--ink-30);font-size:14px">
+      هنوز چیزی ثبت نشده 🌸
+    </div>
+  </div>
+</div>
+
+<!-- Log Modal -->
+<div class="modal-overlay" id="logModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🌸 ثبت قاعدگی</div>
+    <div class="modal-sub" id="modalDate">امروز — ثبت می‌شود</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">لغو</button>
+      <button class="btn-confirm" onclick="confirmLog()">✅ بله، ثبت کن</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+
+const userId = tg?.initDataUnsafe?.user?.id || 'guest';
+const firstName = tg?.initDataUnsafe?.user?.first_name || 'عزیزم';
+
+// ── State ──
+let logs = JSON.parse(localStorage.getItem(`logs_${userId}`) || '[]');
+let currentMonth = new Date();
+currentMonth.setDate(1);
+
+const CYCLE = 28, PERIOD_DAYS = 5, FERTILE_START = 10, FERTILE_END = 17, OVULATION = 14, PMS_START = 21;
+
+// ── Helpers ──
+function saveLogs() { localStorage.setItem(`logs_${userId}`, JSON.stringify(logs)); }
+
+function toGregorian(d) { return new Date(d); }
+
+function dateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function persianNum(n) {
+  return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+}
+
+function formatPersianDate(d) {
+  const months = ['ژانویه','فوریه','مارس','آوریل','مه','ژوئن','ژوئیه','اوت','سپتامبر','اکتبر','نوامبر','دسامبر'];
+  return `${persianNum(d.getDate())} ${months[d.getMonth()]} ${persianNum(d.getFullYear())}`;
+}
+
+function addDays(d, n) { const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+
+function getLastLog() {
+  if (!logs.length) return null;
+  return new Date(logs[logs.length-1]);
+}
+
+function getCycleDay() {
+  const last = getLastLog();
+  if (!last) return null;
+  const diff = Math.floor((new Date() - last) / 86400000);
+  return diff + 1;
+}
+
+function getPhase(day) {
+  if (!day) return { name:'ثبت نشده', color:'var(--ink-30)' };
+  if (day <= PERIOD_DAYS) return { name:'قاعدگی 🩸', color:'var(--period)' };
+  if (day <= 9) return { name:'پس از قاعدگی ✨', color:'var(--safe)' };
+  if (day <= FERTILE_END) return { name:'باروری 💫', color:'var(--fertile)' };
+  if (day <= 20) return { name:'پس از تخمک‌گذاری 🌿', color:'var(--lavender)' };
+  if (day <= CYCLE) return { name:'پیش از قاعدگی 🌙', color:'var(--pms)' };
+  return { name:'تأخیر ⚠️', color:'var(--rose-dk)' };
+}
+
+const tips = {
+  1: 'بدنت داره سخت کار می‌کنه 💕 استراحت کافی داشته باش و از خودت مراقبت کن.',
+  2: 'یه لیوان چای زنجبیل برای دردهای قاعدگی معجزه می‌کنه 🍵',
+  3: 'ورزش سبک مثل یوگا می‌تونه دردها رو کم کنه 🧘‍♀️',
+  4: 'آهن بخور! اسفناج، عدس و گوشت قرمز در این روزها خیلی مفیدن 🥗',
+  5: 'آخرین روز — فردا حالت بهتر می‌شه 🌈',
+  10: 'اوج انرژیته! این هفته عالی برای شروع پروژه‌های جدیده ⚡',
+  14: 'امروز روز تخمک‌گذاری‌ته. بدنت در اوج قدرت خودشه 💪',
+  21: 'ممکنه کمی احساساتی‌تر باشی — این طبیعیه 💜',
+  25: 'چند روز دیگه شروع می‌شه. کمی بیشتر استراحت کن 🌸',
+};
+
+function getTip(day) {
+  if (!day) return 'با ثبت اولین قاعدگی، نکات شخصی‌سازی‌شده برات نمایش داده می‌شه 🌸';
+  const keys = Object.keys(tips).map(Number).sort((a,b)=>a-b);
+  let t = 'هر روز از چرخه‌ات منحصربه‌فرده. به بدنت گوش بده 💕';
+  for (const k of keys) { if (day >= k) t = tips[k]; }
+  return t;
+}
+
+// ── UI Update ──
+function updateStatus() {
+  const day = getCycleDay();
+  const phase = getPhase(day);
+  const last = getLastLog();
+
+  document.getElementById('greetingMain').textContent = day
+    ? `${firstName} جان، روز ${persianNum(day)} چرخه‌ته 💕`
+    : `${firstName} جان، خوش اومدی 💕`;
+
+  document.getElementById('phaseName').textContent = phase.name;
+  document.getElementById('phaseName').style.color = phase.color;
+  document.getElementById('cycleDayBadge').textContent = day ? `روز ${persianNum(day)}` : 'ثبت نشده';
+  document.getElementById('statusBarFill').style.width = day ? `${Math.min(day/CYCLE*100,100)}%` : '0%';
+  document.getElementById('cycleProgress').textContent = day ? `${persianNum(day)} / ۲۸ روز` : '— / ۲۸ روز';
+
+  if (last) {
+    const nextPeriod = addDays(last, CYCLE);
+    const nextOvulation = addDays(last, OVULATION);
+    const today = new Date();
+    const daysUntilP = Math.max(0, Math.ceil((nextPeriod - today) / 86400000));
+    const daysUntilO = Math.max(0, Math.ceil((nextOvulation - today) / 86400000));
+
+    document.getElementById('daysUntilPeriod').textContent = persianNum(daysUntilP);
+    document.getElementById('daysUntilOvulation').textContent = persianNum(daysUntilO);
+    document.getElementById('nextPeriodDate').textContent = formatPersianDate(nextPeriod);
+    document.getElementById('ovulationDate').textContent = formatPersianDate(nextOvulation);
+  } else {
+    ['daysUntilPeriod','daysUntilOvulation'].forEach(id => document.getElementById(id).textContent = '—');
+    document.getElementById('nextPeriodDate').textContent = 'هنوز ثبت نشده';
+    document.getElementById('ovulationDate').textContent = 'هنوز ثبت نشده';
+  }
+
+  document.getElementById('cycleCount').textContent = persianNum(logs.length);
+  document.getElementById('totalLogs').textContent = persianNum(logs.length);
+  document.getElementById('avgCycle').textContent = persianNum(CYCLE);
+  document.getElementById('phaseTipText').textContent = getTip(day);
+}
+
+// ── Calendar ──
+const DOW = ['ش','ی','د','س','چ','پ','ج'];
+
+function getDayClass(dateS, lastLog) {
+  if (!lastLog) return '';
+  const d = new Date(dateS);
+  const last = new Date(lastLog);
+  const diff = Math.floor((d - last) / 86400000);
+  const cyclePos = ((diff % CYCLE) + CYCLE) % CYCLE + 1;
+
+  // Check if it's a logged period start
+  if (logs.includes(dateS)) return 'period';
+
+  // For future dates — predictions
+  const today = new Date(); today.setHours(0,0,0,0);
+  if (d > today) {
+    if (cyclePos >= 1 && cyclePos <= PERIOD_DAYS) return 'predicted';
+    if (cyclePos >= FERTILE_START && cyclePos <= FERTILE_END) return 'fertile';
+    if (cyclePos === OVULATION) return 'ovulation';
+    if (cyclePos >= PMS_START) return 'pms';
+    return '';
+  }
+
+  // Past dates
+  if (diff >= 0 && diff < PERIOD_DAYS) return 'period';
+  if (diff >= FERTILE_START-1 && diff < FERTILE_END) return 'fertile';
+  if (diff === OVULATION-1) return 'ovulation';
+  if (diff >= PMS_START-1 && diff < CYCLE) return 'pms';
+  return '';
+}
+
+function renderCalendar() {
+  const months = ['ژانویه','فوریه','مارس','آوریل','مه','ژوئن','ژوئیه','اوت','سپتامبر','اکتبر','نوامبر','دسامبر'];
+  document.getElementById('calMonthLabel').textContent =
+    `${months[currentMonth.getMonth()]} ${persianNum(currentMonth.getFullYear())}`;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+
+  const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+  const lastDay  = new Date(currentMonth.getFullYear(), currentMonth.getMonth()+1, 0);
+  const startDow = (firstDay.getDay() + 1) % 7; // Saturday=0 for RTL
+
+  for (let i=0; i<startDow; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const lastLog = getLastLog() ? dateStr(getLastLog()) : null;
+
+  for (let d=1; d<=lastDay.getDate(); d++) {
+    const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), d);
+    const ds = dateStr(date);
+    const isToday = date.getTime() === today.getTime();
+    const cls = getDayClass(ds, lastLog);
+    grid.innerHTML += `<div class="cal-day ${cls} ${isToday?'today':''}" onclick="dayClick('${ds}')">${persianNum(d)}</div>`;
+  }
+}
+
+function changeMonth(dir) {
+  currentMonth.setMonth(currentMonth.getMonth() + dir);
+  renderCalendar();
+}
+
+function dayClick(ds) {
+  if (ds <= dateStr(new Date())) {
+    document.getElementById('modalDate').textContent = `📅 تاریخ: ${ds}`;
+    document.getElementById('logModal').dataset.date = ds;
+    openLogModal(ds);
+  }
+}
+
+// ── History ──
+function renderHistory() {
+  const container = document.getElementById('historyList');
+  if (!logs.length) {
+    container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--ink-30);font-size:14px">هنوز چیزی ثبت نشده 🌸</div>`;
+    return;
+  }
+  const sorted = [...logs].reverse();
+  container.innerHTML = sorted.map((log, i) => {
+    const d = new Date(log);
+    const next = i < sorted.length-1 ? new Date(sorted[i+1]) : null;
+    const cycleLen = next ? Math.round((d-next)/86400000) : CYCLE;
+    return `
+    <div class="history-item">
+      <div>
+        <div class="hi-date">${formatPersianDate(d)}</div>
+        <div class="hi-sub">طول چرخه: ${persianNum(cycleLen)} روز</div>
+      </div>
+      <div class="hi-badge">چرخه ${persianNum(logs.length - i)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Tabs ──
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`page-${name}`).classList.add('active');
+  event.target.classList.add('active');
+  if (name==='history') renderHistory();
+  if (name==='calendar') renderCalendar();
+}
+
+// ── Modal ──
+let pendingDate = null;
+function openLogModal(date) {
+  pendingDate = date || dateStr(new Date());
+  document.getElementById('modalDate').textContent = `📅 تاریخ انتخابی: ${pendingDate}`;
+  document.getElementById('logModal').classList.add('open');
+}
+function closeModal() { document.getElementById('logModal').classList.remove('open'); }
+
+function confirmLog() {
+  if (!pendingDate) return;
+  if (!logs.includes(pendingDate)) {
+    logs.push(pendingDate);
+    logs.sort();
+    saveLogs();
+  }
+  closeModal();
+  updateStatus();
+  renderCalendar();
+
+  // Send to bot
+  if (tg) {
+    tg.sendData(JSON.stringify({ action: 'log', date: pendingDate, userId }));
+  }
+
+  showToast('✅ قاعدگی با موفقیت ثبت شد 🌸');
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+function showAbout() {
+  showToast('💕 دُنا — دستیار چرخه قاعدگی شما');
+}
+
+// ── Init ──
+updateStatus();
+renderCalendar();
+</script>
+</body>
+</html>
