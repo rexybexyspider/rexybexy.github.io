@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>دنا — تقویم و مدیریت چرخه قاعدگی</title>
+  <title>دنا — داشبورد و تقویم چرخه قاعدگی</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
@@ -42,7 +42,6 @@
       gap: 20px;
     }
 
-    /* کارت تایمر فوق‌العاده لوکس صورتی */
     .countdown-card {
       background: var(--card-bg);
       border-radius: 24px;
@@ -78,7 +77,6 @@
       font-weight: 600;
     }
 
-    /* کارت نمایش جزئیات و بازه‌های زمانی سیکل */
     .details-card {
       background: var(--card-bg);
       border-radius: 22px;
@@ -117,7 +115,6 @@
       font-weight: 600;
     }
 
-    /* کارت تقویم جلالی اختصاصی */
     .calendar-card {
       background: var(--card-bg);
       border-radius: 24px;
@@ -176,6 +173,7 @@
       text-align: center;
     }
 
+    /* استایل‌های غیرقابل کلیک برای تقویم */
     .day-cell {
       aspect-ratio: 1;
       display: flex;
@@ -184,21 +182,11 @@
       font-size: 15px;
       font-weight: 500;
       border-radius: 50%;
-      cursor: pointer;
+      cursor: default; /* جلوگیری از تغییر نشانگر موس */
       position: relative;
-      transition: all 0.2s;
       user-select: none;
     }
 
-    .day-cell:active {
-      transform: scale(0.85);
-    }
-
-    .day-cell.empty {
-      cursor: default;
-    }
-
-    /* استایل روزهای قاعدگی ثبت‌شده */
     .day-cell.period {
       background-color: var(--rose);
       color: white;
@@ -206,19 +194,16 @@
       box-shadow: 0 4px 12px rgba(232, 114, 138, 0.4);
     }
 
-    /* استایل فوق‌العاده شیک بازه تخمک‌گذاری و بارداری */
     .day-cell.fertile {
       background-color: #EBDEF0;
       color: var(--purple-dark);
       font-weight: 600;
     }
 
-    /* استایل روز امروز */
     .day-cell.today-match {
       border: 2px solid var(--text);
     }
 
-    /* راهنمای رنگ‌ها */
     .legend {
       display: flex;
       flex-wrap: wrap;
@@ -241,7 +226,6 @@
       border-radius: 50%;
     }
 
-    /* لیست مدیریت تاریخ‌ها */
     .section-card {
       background: var(--card-bg);
       border-radius: 22px;
@@ -273,35 +257,6 @@
       font-weight: 500;
       font-size: 14px;
     }
-
-    .btn-delete {
-      background: #FDEDEC;
-      border: none;
-      color: #E74C3C;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 10px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #3D2035;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 50px;
-      font-size: 14px;
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
   </style>
 </head>
 <body>
@@ -311,13 +266,12 @@
     <div class="countdown-card">
       <div class="countdown-title">🌸 زمان باقی‌مانده تا شروع سیکل بعدی شما</div>
       <div class="countdown-timer" id="liveTimer">-- روز و -- ساعت و -- دقیقه</div>
-      <div class="status-badge" id="statusBadge">در حال تحلیل داده‌ها...</div>
+      <div class="status-badge" id="statusBadge">در حال دریافت داده‌ها...</div>
     </div>
 
     <div class="details-card">
       <div class="section-title" style="margin-bottom: 4px;">📊 تحلیل وضعیت و بازه‌های سیکل فعلی</div>
-      <div id="cycleDetailsContainer">
-        </div>
+      <div id="cycleDetailsContainer"></div>
     </div>
 
     <div class="calendar-card">
@@ -331,8 +285,7 @@
         <div>ش</div><div>ی</div><div>د</div><div>س</div><div>چ</div><div>پ</div><div>ج</div>
       </div>
 
-      <div class="days-grid" id="calendarDaysGrid">
-        </div>
+      <div class="days-grid" id="calendarDaysGrid"></div>
 
       <div class="legend">
         <div class="legend-item">
@@ -351,22 +304,17 @@
     </div>
 
     <div class="section-card">
-      <div class="section-title">🩸 تاریخ‌های ثبت‌شده اخیر</div>
+      <div class="section-title">🩸 تاریخ‌های ثبت‌شده اخیر شما</div>
+      <p style="font-size:12px; color:var(--text-muted); margin-top:-10px; margin-bottom:12px;">برای مدیریت چرخه‌ها از داخل خود ربات دکمه "مدیریت چرخه‌ها" را بزنید.</p>
       <div id="cycleList"></div>
     </div>
 
   </div>
 
-  <div class="toast" id="toast">پیام تایید</div>
-
   <script>
     let tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-    }
+    if (tg) { tg.ready(); tg.expand(); }
 
-    // الگوریتم‌های مبدل تاریخ جلالی و میلادی
     function g2j(gy, gm, gd) {
       let g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 335];
       let gy2 = (gm > 2) ? (gy + 1) : gy;
@@ -405,16 +353,9 @@
       return `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
     }
 
-    // لود لوکال لاگ‌ها و داده‌ها
     const urlParams = new URLSearchParams(window.location.search);
     let logs = urlParams.get('logs') ? urlParams.get('logs').split(',').filter(Boolean) : [];
     
-    if (logs.length === 0 && localStorage.getItem('user_cycles')) {
-      logs = JSON.parse(localStorage.getItem('user_cycles'));
-    }
-    function saveToLocal() { localStorage.setItem('user_cycles', JSON.stringify(logs)); }
-    saveToLocal();
-
     let todayG = new Date();
     let todayJ = g2j(todayG.getFullYear(), todayG.getMonth() + 1, todayG.getDate());
     let currentYear = todayJ.jy;
@@ -430,12 +371,10 @@
       return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
     }
 
-    // تابع بررسی اینکه آیا روز مورد نظر در بازه تخمک‌گذاری هرکدام از سیکل‌ها قرار دارد یا خیر
     function checkIsFertile(dateStr) {
       let currentCellTime = new Date(dateStr).setHours(0,0,0,0);
       for (let log of logs) {
         let logDate = new Date(log);
-        // شروع بازه تخمک‌گذاری معمولاً روز ۱۱ام سیکل و پایان آن روز ۱۶ام سیکل است
         let fertileStart = new Date(logDate);
         fertileStart.setDate(logDate.getDate() + 10);
         let fertileEnd = new Date(logDate);
@@ -448,7 +387,6 @@
       return false;
     }
 
-    // رندر کامل تقویم چند رنگ جلالی
     function renderCustomCalendar() {
       const grid = document.getElementById('calendarDaysGrid');
       document.getElementById('currentMonthYear').textContent = `${JALALI_MONTHS[currentMonth - 1]} ${toPersianNum(currentYear)}`;
@@ -477,37 +415,15 @@
         if (logs.includes(dateStr)) {
           cell.classList.add('period');
         } else if (checkIsFertile(dateStr)) {
-          cell.classList.add('fertile'); // هایلایت بنفش زمان بارداری و تخمک‌گذاری
+          cell.classList.add('fertile');
         }
 
         if (currentYear === todayJ.jy && currentMonth === todayJ.jm && day === todayJ.jd) {
           cell.classList.add('today-match');
         }
 
-        cell.onclick = () => toggleDateSelection(dateStr, day);
         grid.appendChild(cell);
       }
-    }
-
-    function toggleDateSelection(dateStr, dayNumber) {
-      if (logs.includes(dateStr)) {
-        if (confirm(`آیا می‌خواهید تاریخ ${toPersianNum(dayNumber)} ${JALALI_MONTHS[currentMonth-1]} را حذف کنید؟`)) {
-          logs = logs.filter(item => item !== dateStr);
-          syncWithBot('delete', dateStr);
-        }
-      } else {
-        logs.push(dateStr);
-        syncWithBot('log', dateStr);
-      }
-      saveToLocal();
-      renderAllComponents();
-    }
-
-    function syncWithBot(actionType, targetDate) {
-      if (tg) {
-        tg.sendData(JSON.stringify({ action: actionType, date: targetDate }));
-      }
-      showToast(actionType === 'log' ? '✅ تاریخ ثبت شد' : '🗑 تاریخ حذف شد');
     }
 
     function prevMonth() {
@@ -528,22 +444,19 @@
       return `${toPersianNum(res.jd)} ${JALALI_MONTHS[res.jm - 1]} ${toPersianNum(res.jy)}`;
     }
 
-    // رندر پویا و متنی بازه‌های تخمک‌گذاری و قاعدگی بر اساس اولین و آخرین ورودی کاربر
     function renderCycleDetailsText() {
       const container = document.getElementById('cycleDetailsContainer');
       if (logs.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:13px; margin: 10px 0;">🌸 لطفاً اولین روز شروع چرخه‌ خود را از روی تقویم زیر لمس و ثبت کنید تا زمان دقیق تخمک‌گذاری محاسبه شود.</p>`;
+        container.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:13px; margin: 10px 0;">🌸 برای مشاهده بازه‌های دقیق قاعدگی و تخمک‌گذاری، لطفاً تاریخ شروع چرخه خود را در ربات ثبت کنید.</p>`;
         return;
       }
 
       let sortedLogs = [...logs].sort((a, b) => new Date(a) - new Date(b));
       let lastLogDate = new Date(sortedLogs[sortedLogs.length - 1]);
 
-      // بازه حدودی خونریزی قاعدگی فعلی (مثلا ۵ روز)
       let periodEnd = new Date(lastLogDate);
       periodEnd.setDate(lastLogDate.getDate() + 4);
 
-      // بازه تخمک‌گذاری و بارداری بالای این چرخه (روز ۱۱ تا ۱۶)
       let fertileStart = new Date(lastLogDate);
       fertileStart.setDate(lastLogDate.getDate() + 10);
       let fertileEnd = new Date(lastLogDate);
@@ -555,20 +468,19 @@
           <span class="detail-value" style="color: var(--rose-dark);">${toJalaliFullStr(formatDateStr(lastLogDate))} تا ${toJalaliFullStr(formatDateStr(periodEnd))}</span>
         </div>
         <div class="detail-row fertile-range">
-          <span class="detail-label">✨ تخمک‌گذاری و احتمال بارداری:</span>
+          <span class="detail-label">✨ تخمک‌گذاری و بارداری:</span>
           <span class="detail-value" style="color: var(--purple-dark);">${toJalaliFullStr(formatDateStr(fertileStart))} تا ${toJalaliFullStr(formatDateStr(fertileEnd))}</span>
         </div>
       `;
     }
 
-    // محاسبه دقیق و به روز رسانی تایمر معکوس درخواستی
     function calculateLiveCountdown() {
       const timerElement = document.getElementById('liveTimer');
       const badgeElement = document.getElementById('statusBadge');
 
       if (logs.length === 0) {
         timerElement.textContent = "چرخه‌ای ثبت نشده است";
-        badgeElement.textContent = "⬜ در انتظار ثبت تاریخ شروع چرخه...";
+        badgeElement.textContent = "⬜ در انتظار دریافت اطلاعات از ربات...";
         return;
       }
 
@@ -612,23 +524,15 @@
       const container = document.getElementById('cycleList');
       
       if (sortedLogs.length === 0) {
-        container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:13px; padding:10px;">هیچ تاریخی علامت‌گذاری نشده است</div>';
+        container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:13px; padding:10px;">تا کنون تاریخی در ربات ثبت نشده است</div>';
         return;
       }
 
       container.innerHTML = sortedLogs.slice(0, 5).map(date => `
         <div class="cycle-item">
-          <div class="cycle-date">🩸 شروع قاعدگی: ${toJalaliFullStr(date)}</div>
-          <button class="btn-delete" onclick="toggleDateSelection('${date}', parseInt('${date.split('-')[2]}'))">🗑 حذف</button>
+          <div class="cycle-date">🩸 شروع قاعدگی: <span style="color:var(--rose-dark); font-weight:700;">${toJalaliFullStr(date)}</span></div>
         </div>
       `).join('');
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => { toast.classList.remove('show'); }, 2500);
     }
 
     function renderAllComponents() {
@@ -638,11 +542,8 @@
       calculateLiveCountdown();
     }
 
-    // لود کامل برنامه
     renderAllComponents();
     setInterval(calculateLiveCountdown, 60000);
   </script>
 </body>
 </html>
-
-```
