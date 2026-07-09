@@ -1,0 +1,1748 @@
+/* ==========================================
+   🎵 ربات موسیقی - استایل حرفه‌ای
+   Modern, dark, glassmorphism design
+   ========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;900&display=swap');
+
+:root {
+    /* پالت رنگ موسیقی */
+    --bg-darkest: #0a0a1a;
+    --bg-dark: #12122a;
+    --bg-mid: #1a1a3a;
+    --bg-light: #25254a;
+    --bg-glass: rgba(255, 255, 255, 0.05);
+    --bg-glass-hover: rgba(255, 255, 255, 0.1);
+
+    --primary: #6C5CE7;
+    --primary-light: #8B7FF0;
+    --primary-dark: #4A3FBF;
+    --accent: #00CEC9;
+    --accent-light: #5FFBF1;
+    --pink: #FD79A8;
+    --orange: #FDCB6E;
+    --green: #00B894;
+    --red: #FF7675;
+
+    --text: #FFFFFF;
+    --text-dim: #B0B0D0;
+    --text-dimmer: #707090;
+    --text-dark: #000;
+
+    --gradient-1: linear-gradient(135deg, #6C5CE7 0%, #00CEC9 100%);
+    --gradient-2: linear-gradient(135deg, #FD79A8 0%, #FDCB6E 100%);
+    --gradient-3: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%);
+    --gradient-4: linear-gradient(135deg, #6C5CE7 0%, #FD79A8 100%);
+
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+    --shadow-glow: 0 0 24px rgba(108, 92, 231, 0.4);
+    --shadow-glow-accent: 0 0 24px rgba(0, 206, 201, 0.4);
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-full: 999px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Vazirmatn', sans-serif;
+    background: var(--bg-darkest);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+body {
+    background:
+        radial-gradient(circle at 20% 20%, rgba(108, 92, 231, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 206, 201, 0.1) 0%, transparent 50%),
+        var(--bg-darkest);
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden { display: none !important; }
+
+/* ==========================================
+   لودر
+   ========================================== */
+.loader {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-darkest);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loader-vinyl {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 24px;
+}
+
+.vinyl-record {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at center, #6C5CE7 0%, #6C5CE7 25%, #0a0a0a 25%, #0a0a0a 30%, #1a1a1a 30%, #1a1a1a 100%);
+    border: 4px solid #0a0a0a;
+    box-shadow: 0 0 30px rgba(108, 92, 231, 0.5);
+    animation: spin 2s linear infinite;
+    position: relative;
+}
+
+.vinyl-record::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #6C5CE7;
+    border-radius: 50%;
+    border: 2px solid #0a0a0a;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.loader-text {
+    color: var(--text-dim);
+    font-size: 13px;
+    animation: pulse 1.5s ease infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* ==========================================
+   صفحه‌ها
+   ========================================== */
+.screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================
+   هدر
+   ========================================== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--bg-glass);
+    flex-shrink: 0;
+}
+
+.app-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.app-icon {
+    font-size: 22px;
+    filter: drop-shadow(0 0 8px rgba(108, 92, 231, 0.8));
+}
+
+.icon-btn {
+    background: var(--bg-glass);
+    border: 1px solid var(--bg-glass);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.icon-btn:active {
+    transform: scale(0.92);
+    background: var(--bg-glass-hover);
+}
+
+/* ==========================================
+   نوار جستجو
+   ========================================== */
+.search-section {
+    padding: 12px 16px 8px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--bg-glass);
+    flex-shrink: 0;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-mid);
+    border: 1px solid var(--bg-light);
+    border-radius: var(--radius-full);
+    padding: 8px 16px;
+    transition: all 0.2s;
+}
+
+.search-bar:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+}
+
+.search-icon {
+    color: var(--text-dim);
+    font-size: 14px;
+}
+
+#search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    direction: rtl;
+}
+
+#search-input::placeholder {
+    color: var(--text-dimmer);
+}
+
+.clear-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+    display: none;
+}
+
+.clear-btn.visible {
+    display: block;
+}
+
+.search-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+}
+
+.search-tags::-webkit-scrollbar {
+    display: none;
+}
+
+.tag-btn {
+    background: var(--bg-mid);
+    border: 1px solid var(--bg-light);
+    color: var(--text-dim);
+    padding: 5px 14px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.tag-btn:active {
+    background: var(--primary);
+    color: var(--text);
+    border-color: var(--primary);
+}
+
+/* ==========================================
+   محتوا
+   ========================================== */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px 120px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--bg-glass);
+    padding-bottom: 4px;
+}
+
+.tab {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    padding: 8px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab.active {
+    color: var(--primary-light);
+    border-bottom-color: var(--primary);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   لیست آهنگ‌ها
+   ========================================== */
+.track-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.track-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: var(--bg-glass);
+    border: 1px solid var(--bg-glass);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.track-item:active {
+    transform: scale(0.98);
+    background: var(--bg-glass-hover);
+}
+
+.track-item.playing {
+    background: rgba(108, 92, 231, 0.2);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.track-artwork {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    background: var(--bg-mid);
+    flex-shrink: 0;
+}
+
+.track-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.track-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+}
+
+.track-artist {
+    font-size: 12px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.track-action-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.track-action-btn:active {
+    transform: scale(0.85);
+    color: var(--primary-light);
+}
+
+.track-playing-indicator {
+    display: flex;
+    align-items: end;
+    gap: 2px;
+    height: 16px;
+}
+
+.track-playing-indicator span {
+    width: 3px;
+    background: var(--primary-light);
+    border-radius: 2px;
+    animation: equalizer 1s ease infinite;
+}
+
+.track-playing-indicator span:nth-child(1) { height: 60%; animation-delay: 0s; }
+.track-playing-indicator span:nth-child(2) { height: 100%; animation-delay: 0.2s; }
+.track-playing-indicator span:nth-child(3) { height: 70%; animation-delay: 0.4s; }
+
+@keyframes equalizer {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1); }
+}
+
+/* ==========================================
+   صفحه‌ی خالی
+   ========================================== */
+.discover-default {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+}
+
+.empty-art {
+    font-size: 80px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+    animation: float 3s ease infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.discover-default h3 {
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.discover-default p {
+    font-size: 13px;
+    color: var(--text-dim);
+}
+
+/* ==========================================
+   پلیر پایین
+   ========================================== */
+.player-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(18, 18, 42, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--bg-glass);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+}
+
+.player-artwork {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: var(--bg-mid);
+}
+
+.player-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.player-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-artist {
+    font-size: 11px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.control-btn {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn:active {
+    transform: scale(0.85);
+}
+
+.play-btn {
+    background: var(--gradient-1);
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+    box-shadow: var(--shadow-glow);
+}
+
+.listen-together-btn {
+    color: var(--accent);
+    font-size: 18px;
+}
+
+.player-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    width: 100%;
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    padding: 0 14px;
+    /* مهم: pointer-events رو none نذار تا کلیک کار کنه */
+}
+
+.time-text {
+    font-size: 10px;
+    color: var(--text-dimmer);
+    font-family: monospace;
+    pointer-events: none;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--bg-light);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    cursor: pointer;
+    /* برای اینکه کلیک روی فضای اطراف هم کار کنه */
+    padding: 8px 0;
+    margin: -8px 0;
+    background-clip: content-box;
+    /* ولی فقط خود نوار قابل کلیک باشه */
+    position: relative;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--bg-light);
+    border-radius: var(--radius-full);
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient-1);
+    width: 0;
+    transition: width 0.1s linear;
+    position: relative;
+    z-index: 1;
+    border-radius: var(--radius-full);
+    /* در RTL، fill از سمت راست پر بشه */
+    margin-right: auto;
+}
+
+/* در حالت RTL، progress-fill باید از راست شروع شه */
+[dir="rtl"] .progress-fill {
+    margin-right: 0;
+    margin-left: auto;
+}
+
+/* ==========================================
+   صفحه Now Playing
+   ========================================== */
+.now-playing {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.np-background {
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-3);
+    z-index: -1;
+}
+
+.np-background::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(108, 92, 231, 0.4) 0%, transparent 60%);
+}
+
+.np-background::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 70% 70%, rgba(253, 121, 168, 0.3) 0%, transparent 60%);
+}
+
+.np-content {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 24px 30px;
+    position: relative;
+}
+
+.np-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--bg-glass);
+    border: 1px solid var(--bg-glass);
+    color: var(--text);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+}
+
+.np-artwork-container {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin-bottom: 30px;
+}
+
+.np-artwork {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), var(--shadow-glow);
+    transition: transform 0.3s;
+}
+
+.np-artwork.playing {
+    animation: artworkPulse 4s ease infinite;
+}
+
+@keyframes artworkPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(108, 92, 231, 0.4); }
+    50% { transform: scale(1.02); box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(108, 92, 231, 0.7); }
+}
+
+.np-vinyl {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at center, #6C5CE7 0%, #6C5CE7 25%, #0a0a0a 25%, #0a0a0a 30%, #1a1a1a 30%, #1a1a1a 100%);
+    border: 4px solid #0a0a0a;
+    animation: spin 4s linear infinite;
+    animation-play-state: paused;
+    z-index: -1;
+}
+
+.np-vinyl.spinning {
+    animation-play-state: running;
+}
+
+.np-info {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.np-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.np-artist {
+    font-size: 15px;
+    color: var(--text-dim);
+}
+
+.np-progress {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 24px;
+}
+
+.np-progress-bar {
+    height: 6px;
+    background: var(--bg-glass);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    /* برای راحت‌تر کلیک کردن */
+    padding: 10px 0;
+    margin: -10px 0;
+    background-clip: content-box;
+}
+
+.np-progress-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--bg-glass);
+    border-radius: var(--radius-full);
+}
+
+.np-progress-fill {
+    height: 100%;
+    background: var(--gradient-1);
+    width: 0;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px rgba(108, 92, 231, 0.6);
+    position: relative;
+    z-index: 1;
+    border-radius: var(--radius-full);
+    margin-right: auto;
+}
+
+[dir="rtl"] .np-progress-fill {
+    margin-right: 0;
+    margin-left: auto;
+}
+
+.np-times {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: monospace;
+}
+
+.np-controls {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.np-control-btn {
+    background: var(--bg-glass);
+    border: 1px solid var(--bg-glass);
+    color: var(--text);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+}
+
+.np-control-btn:active {
+    transform: scale(0.92);
+}
+
+.np-play-btn {
+    background: var(--gradient-1);
+    width: 70px;
+    height: 70px;
+    font-size: 24px;
+    box-shadow: var(--shadow-glow);
+}
+
+.listen-together-btn-full {
+    background: var(--bg-glass);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 10px 24px;
+    border-radius: var(--radius-full);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+}
+
+.listen-together-btn-full:active {
+    transform: scale(0.95);
+    background: var(--accent);
+    color: var(--text-dark);
+}
+
+/* ==========================================
+   مودال‌ها
+   ========================================== */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+    animation: fadeIn 0.2s;
+}
+
+.modal-content {
+    background: var(--bg-mid);
+    border: 1px solid var(--bg-light);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 380px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h3 {
+    font-size: 17px;
+    margin-bottom: 14px;
+    color: var(--text);
+}
+
+.modal-content input {
+    width: 100%;
+    background: var(--bg-dark);
+    border: 1px solid var(--bg-light);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    margin-bottom: 14px;
+    outline: none;
+}
+
+.modal-content input:focus {
+    border-color: var(--primary);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--gradient-1);
+    color: var(--text);
+}
+
+.btn-primary:active {
+    transform: scale(0.95);
+}
+
+.btn-secondary {
+    background: var(--bg-light);
+    color: var(--text);
+}
+
+.btn-secondary:active {
+    transform: scale(0.95);
+}
+
+.modal-friends-list {
+    max-height: 280px;
+    overflow-y: auto;
+    margin-bottom: 14px;
+}
+
+.modal-friend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: var(--bg-dark);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    margin-bottom: 6px;
+    transition: background 0.2s;
+}
+
+.modal-friend-item:active {
+    background: var(--bg-light);
+}
+
+.modal-friend-avatar {
+    font-size: 24px;
+}
+
+.modal-friend-info {
+    flex: 1;
+}
+
+.modal-friend-name {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 2px;
+}
+
+.modal-friend-status {
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+.modal-friend-status.online {
+    color: var(--green);
+}
+
+/* پروفایل */
+.profile-section {
+    margin-bottom: 16px;
+}
+
+.profile-section label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+}
+
+.emoji-picker {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+}
+
+.emoji-picker button {
+    background: var(--bg-dark);
+    border: 1px solid var(--bg-light);
+    border-radius: var(--radius-sm);
+    padding: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.emoji-picker button.selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: scale(1.1);
+}
+
+/* ==========================================
+   دوستان
+   ========================================== */
+.friends-section {
+    padding: 4px 0;
+}
+
+.add-friend-btn {
+    width: 100%;
+    background: var(--gradient-1);
+    border: none;
+    color: var(--text);
+    padding: 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+}
+
+.add-friend-btn:active {
+    transform: scale(0.97);
+}
+
+.friends-section h3 {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.friends-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.friend-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-glass);
+    border: 1px solid var(--bg-glass);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.friend-avatar {
+    font-size: 28px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-mid);
+    border-radius: 50%;
+    position: relative;
+}
+
+.friend-avatar.online::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background: var(--green);
+    border: 2px solid var(--bg-dark);
+    border-radius: 50%;
+}
+
+.friend-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.friend-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+}
+
+.friend-id {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: monospace;
+}
+
+.friend-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.friend-action-btn {
+    background: var(--bg-mid);
+    border: 1px solid var(--bg-light);
+    color: var(--text);
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.friend-action-btn:active {
+    transform: scale(0.9);
+}
+
+.friend-action-btn.accept {
+    background: var(--green);
+    border-color: var(--green);
+}
+
+.friend-action-btn.reject {
+    background: var(--red);
+    border-color: var(--red);
+}
+
+/* ==========================================
+   دعوت‌های گوش دادن
+   ========================================== */
+.invites-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.invite-card {
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.15) 0%, rgba(0, 206, 201, 0.1) 100%);
+    border: 1px solid var(--primary);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    animation: glow 2s ease infinite;
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(108, 92, 231, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(108, 92, 231, 0.6); }
+}
+
+.invite-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.invite-avatar {
+    font-size: 24px;
+}
+
+.invite-info {
+    flex: 1;
+}
+
+.invite-from {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 600;
+}
+
+.invite-text {
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+.invite-track {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    background: var(--bg-glass);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+}
+
+.invite-track img {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+}
+
+.invite-track-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.invite-track-name {
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.invite-track-artist {
+    font-size: 10px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.invite-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.invite-buttons button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.invite-accept {
+    background: var(--green);
+    color: var(--text);
+}
+
+.invite-reject {
+    background: var(--bg-light);
+    color: var(--text);
+}
+
+/* ==========================================
+   صفحه‌ی session (گوش دادن همزمان)
+   ========================================== */
+.session-screen {
+    background: var(--bg-darkest);
+}
+
+.session-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--bg-glass);
+    gap: 12px;
+}
+
+.session-close {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.session-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.session-icon {
+    font-size: 20px;
+}
+
+.session-track {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--bg-glass);
+    margin: 12px;
+    border-radius: var(--radius-md);
+}
+
+.session-track img {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+}
+
+.session-track-info {
+    flex: 1;
+    min-width: 0;
+}
+
+#session-track-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#session-track-artist {
+    font-size: 12px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.session-users {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 16px;
+    background: var(--bg-glass);
+    margin: 0 12px 12px;
+    border-radius: var(--radius-md);
+}
+
+.session-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.session-avatar {
+    font-size: 32px;
+    width: 60px;
+    height: 60px;
+    background: var(--bg-mid);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--primary);
+}
+
+.session-name {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 600;
+}
+
+.session-status {
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+.session-link {
+    font-size: 24px;
+    color: var(--primary-light);
+    animation: pulse 1.5s ease infinite;
+}
+
+.session-player {
+    padding: 16px;
+    margin: 0 12px 12px;
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+}
+
+.session-progress {
+    height: 6px;
+    background: var(--bg-light);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.session-progress-fill {
+    height: 100%;
+    background: var(--gradient-1);
+    width: 0;
+    transition: width 0.2s;
+    box-shadow: 0 0 8px rgba(108, 92, 231, 0.6);
+}
+
+.session-times {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: monospace;
+    margin-bottom: 14px;
+}
+
+.session-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.session-control-btn {
+    background: var(--gradient-1);
+    border: none;
+    color: var(--text);
+    padding: 10px 24px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-glow);
+}
+
+.session-control-btn:active {
+    transform: scale(0.95);
+}
+
+.session-control-btn#session-sync {
+    background: var(--bg-mid);
+    box-shadow: none;
+}
+
+.session-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background: var(--bg-glass);
+    margin: 0 12px 12px;
+    border-radius: var(--radius-md);
+    min-height: 200px;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chat-message {
+    display: flex;
+    align-items: end;
+    gap: 8px;
+    animation: fadeIn 0.2s;
+}
+
+.chat-message.me {
+    flex-direction: row-reverse;
+}
+
+.chat-message-avatar {
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.chat-message-bubble {
+    background: var(--bg-mid);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    max-width: 70%;
+    font-size: 13px;
+}
+
+.chat-message.me .chat-message-bubble {
+    background: var(--primary);
+    color: var(--text);
+}
+
+.chat-message-name {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 2px;
+}
+
+.chat-input {
+    display: flex;
+    gap: 6px;
+}
+
+.chat-input input {
+    flex: 1;
+    background: var(--bg-dark);
+    border: 1px solid var(--bg-light);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: var(--radius-full);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+}
+
+#chat-send {
+    background: var(--primary);
+    border: none;
+    color: var(--text);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   Toast
+   ========================================== */
+.toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-mid);
+    border: 1px solid var(--bg-light);
+    color: var(--text);
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    z-index: 5000;
+    font-size: 13px;
+    box-shadow: var(--shadow-lg);
+    animation: toastIn 0.3s, toastOut 0.3s 2.2s forwards;
+}
+
+.toast.success { border-color: var(--green); }
+.toast.error { border-color: var(--red); }
+.toast.info { border-color: var(--accent); }
+
+@keyframes toastIn {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes toastOut {
+    from { opacity: 1; transform: translate(-50%, 0); }
+    to { opacity: 0; transform: translate(-50%, -20px); }
+}
+
+/* ==========================================
+   اسکرول‌بار
+   ========================================== */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--bg-light);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* ریسپانسیو */
+@media (max-width: 380px) {
+    .np-artwork-container {
+        width: 220px;
+        height: 220px;
+    }
+    .np-title {
+        font-size: 18px;
+    }
+    .search-tags {
+        font-size: 11px;
+    }
+    .tag-btn {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+}
+
+/* ==========================================
+   اکشن‌های Now Playing
+   ========================================== */
+.np-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.np-action-btn {
+    background: var(--bg-glass);
+    border: 1px solid var(--bg-glass);
+    color: var(--text);
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+}
+
+.np-action-btn:active {
+    transform: scale(0.95);
+}
+
+.np-action-btn.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: var(--text-dark);
+}
+
+/* استایل برای آیتم‌های علاقه‌مندی */
+.track-favorite-btn {
+    color: var(--orange);
+}
+
+.track-favorite-btn.active {
+    background: var(--orange);
+    color: var(--text-dark);
+}
+
+/* تاریخچه و علاقه‌مندی خالی */
+.empty-history {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+}
+
+.empty-history .empty-art {
+    font-size: 70px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+/* ==========================================
+   استایل اضافی برای نسخه‌ی Audius
+   ========================================== */
+.track-duration {
+    font-size: 11px;
+    color: var(--text-dimmer);
+    font-family: monospace;
+    margin-right: 8px;
+}
+
+.track-genre {
+    display: inline-block;
+    background: var(--bg-mid);
+    color: var(--text-dim);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+.source-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--gradient-1);
+    color: white;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.track-item {
+    position: relative;
+}
+
+.quality-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 60px;
+    background: var(--green);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.search-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 30px;
+    color: var(--text-dim);
+}
+
+.search-loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--bg-light);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
