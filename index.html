@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>🏙️ شهر من</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- لودر اولیه -->
+    <div id="loader" class="loader">
+        <div class="loader-pixel">
+            <div class="pixel-grid">
+                <div></div><div></div><div></div>
+                <div></div><div></div><div></div>
+                <div></div><div></div><div></div>
+            </div>
+        </div>
+        <div class="loader-text">در حال بارگذاری شهر...</div>
+    </div>
+
+    <!-- صفحه ورود -->
+    <div id="welcome-screen" class="screen hidden">
+        <div class="welcome-box">
+            <div class="welcome-title">
+                <span class="pixel-title">🏙️</span>
+                <h1 class="game-title">شهر من</h1>
+                <span class="pixel-title">🏙️</span>
+            </div>
+            <p class="welcome-subtitle">بازی شهرسازی کلاسیک</p>
+            <div class="welcome-art">
+                <pre>    🏰    🏠    ⛏️
+    🌳    🏠    🌳    🌾
+    🌳🌳   🏠🏠   🌳   🌾🌾
+    🌳🌳🌳  🏰  🌳🌳  🌾🌾🌾</pre>
+            </div>
+            <button id="start-game-btn" class="pixel-btn pixel-btn-primary">
+                ▶ شروع بازی
+            </button>
+            <button id="continue-game-btn" class="pixel-btn pixel-btn-secondary hidden">
+                ↩ ادامه بازی
+            </button>
+            <div class="welcome-footer">
+                نسخه ۱.۰ • گرافیک پیکسلی کلاسیک
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحه اصلی بازی -->
+    <div id="game-screen" class="screen hidden">
+        <header class="top-bar">
+            <div class="resource-bar">
+                <div class="resource" id="res-gold">
+                    <span class="res-icon">🪙</span>
+                    <span class="res-value" id="val-gold">0</span>
+                </div>
+                <div class="resource" id="res-wood">
+                    <span class="res-icon">🪵</span>
+                    <span class="res-value" id="val-wood">0</span>
+                </div>
+                <div class="resource" id="res-stone">
+                    <span class="res-icon">🪨</span>
+                    <span class="res-value" id="val-stone">0</span>
+                </div>
+                <div class="resource" id="res-food">
+                    <span class="res-icon">🌾</span>
+                    <span class="res-value" id="val-food">0</span>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <div class="city-info">
+                    <span class="city-level" id="city-level">سطح ۱</span>
+                    <span class="city-score" id="city-score">۰ امتیاز</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="city-area" id="city-area">
+            <div class="city-sky">
+                <div class="sun"></div>
+                <div class="cloud cloud-1"></div>
+                <div class="cloud cloud-2"></div>
+                <div class="cloud cloud-3"></div>
+            </div>
+            <div class="city-ground">
+                <div class="grid-container" id="city-grid"></div>
+                <div class="population-bar">
+                    <span class="pop-icon">👥</span>
+                    <div class="pop-bar-container">
+                        <div class="pop-bar-fill" id="pop-bar-fill" style="width:20%"></div>
+                    </div>
+                    <span class="pop-text" id="pop-text">۰/۵۰</span>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-screen="city">
+                <span class="nav-icon">🏙️</span>
+                <span class="nav-label">شهر</span>
+            </button>
+            <button class="nav-btn" data-screen="build">
+                <span class="nav-icon">🏗️</span>
+                <span class="nav-label">ساخت</span>
+            </button>
+            <button class="nav-btn" data-screen="army">
+                <span class="nav-icon">⚔️</span>
+                <span class="nav-label">لشکر</span>
+            </button>
+            <button class="nav-btn" data-screen="friends">
+                <span class="nav-icon">👥</span>
+                <span class="nav-label">دوستان</span>
+            </button>
+            <button class="nav-btn" data-screen="leaderboard">
+                <span class="nav-icon">🏆</span>
+                <span class="nav-label">رتبه</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- پنل‌ها -->
+    <div id="panel-build" class="panel hidden">
+        <div class="panel-header">
+            <h2>🏗️ ساخت ساختمان</h2>
+            <button class="close-btn" data-close-panel>✕</button>
+        </div>
+        <div class="panel-body" id="build-list"></div>
+    </div>
+
+    <div id="panel-army" class="panel hidden">
+        <div class="panel-header">
+            <h2>⚔️ پادگان</h2>
+            <button class="close-btn" data-close-panel>✕</button>
+        </div>
+        <div class="panel-body" id="army-content"></div>
+    </div>
+
+    <div id="panel-friends" class="panel hidden">
+        <div class="panel-header">
+            <h2>👥 دوستان</h2>
+            <button class="close-btn" data-close-panel>✕</button>
+        </div>
+        <div class="panel-body" id="friends-content"></div>
+    </div>
+
+    <div id="panel-leaderboard" class="panel hidden">
+        <div class="panel-header">
+            <h2>🏆 رتبه‌بندی</h2>
+            <button class="close-btn" data-close-panel>✕</button>
+        </div>
+        <div class="panel-body" id="leaderboard-content"></div>
+    </div>
+
+    <div id="panel-visit" class="panel hidden">
+        <div class="panel-header">
+            <h2 id="visit-title">👁️ بازدید</h2>
+            <button class="close-btn" data-close-panel>✕</button>
+        </div>
+        <div class="panel-body" id="visit-content"></div>
+    </div>
+
+    <div id="panel-attack" class="panel hidden">
+        <div class="panel-header">
+            <h2 id="attack-title">⚔️ حمله</h2>
+            <button class="close-btn" data-close-panel>✕</button>
+        </div>
+        <div class="panel-body" id="attack-content"></div>
+    </div>
+
+    <div id="panel-trade" class="panel hidden">
+        <div class="panel-header">
+            <h2 id="trade-title">🤝 تجارت</h2>
+            <button class="close-btn" data-close-panel>✕</button>
+        </div>
+        <div class="panel-body" id="trade-content"></div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="confirm-title">تأیید</h3>
+            <p id="confirm-message">آیا مطمئنی؟</p>
+            <div class="modal-buttons">
+                <button id="confirm-yes" class="pixel-btn pixel-btn-primary">بله</button>
+                <button id="confirm-no" class="pixel-btn pixel-btn-secondary">خیر</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
