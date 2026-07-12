@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual envs
+venv/
+env/
+.venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Env / secrets
+.env
+.env.local
+
+# Runtime data (favorites) — برای اجرای محلی نگه دارید، اما در ریپو مهم نیست
+data/favorites.json
+
+# OS
+.DS_Store
+Thumbs.db
