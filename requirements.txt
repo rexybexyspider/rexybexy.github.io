@@ -1,6 +1,0 @@
-# ربات تلگرام آب‌وهوا 🌤
-# وابستگی‌های پروژه
-# نصب: pip install -r requirements.txt
-
-python-telegram-bot[ext]==21.6
-httpx==0.27.2
